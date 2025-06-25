@@ -3,23 +3,29 @@ import React from "react";
 import StudentRaportTab from "./raport/StudentRaportTab";
 import StudentAbsenceTabs from "./absence/StudentAbsenceTab";
 import StudentSavingTab from "./savings/StudentSavingTab";
+import PersonalDataTab from "./personal-data/PersonalDataTab";
+import ParentDataTab from "./parent-data/ParentDataTab";
 
 const StudentTabs = () => {
   return (
-    <Tabs defaultValue="raport" className="w-full">
+    <Tabs defaultValue="personal-data" className="w-full">
       <TabsList>
-        <TabsTrigger value="raport">Raport</TabsTrigger>
+        <TabsTrigger value="personal-data">Data Pribadi</TabsTrigger>
+        <TabsTrigger value="parent-data">Data Orang Tua</TabsTrigger>
         <TabsTrigger value="absensi">Absensi</TabsTrigger>
-        <TabsTrigger value="tabungan">Tabungan</TabsTrigger>
+        <TabsTrigger value="raport">Raport</TabsTrigger>
       </TabsList>
-      <TabsContent value="raport">
-        <StudentRaportTab />
+      <TabsContent value="personal-data">
+        <PersonalDataTab />
+      </TabsContent>
+      <TabsContent value="parent-data">
+        <ParentDataTab />
       </TabsContent>
       <TabsContent value="absensi">
         <StudentAbsenceTabs />
       </TabsContent>
-      <TabsContent value="tabungan">
-        <StudentSavingTab/>
+      <TabsContent value="raport">
+        <StudentRaportTab />
       </TabsContent>
     </Tabs>
   );

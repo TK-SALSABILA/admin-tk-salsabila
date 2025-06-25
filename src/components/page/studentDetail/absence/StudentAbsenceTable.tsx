@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ArrowUpDown, Edit } from "lucide-react";
-import { dummyAbsensiSiswa, dummyRaporSiswa } from "@/data/studentsData";
+import { dummyAbsensiSiswa } from "@/data/studentsData";
 import { Badge } from "@/components/ui/badge";
 
 const StudentAbsenceTable = () => {
@@ -42,9 +42,7 @@ const StudentAbsenceTable = () => {
               Status Absensi <ArrowUpDown className="ml-1 h-4 w-4" />
             </button>
           </TableHead>
-          <TableHead align="center">
-            <button className="flex justify-between">Action</button>
-          </TableHead>
+          <TableHead>Deskripsi Absensi</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="">
@@ -62,9 +60,7 @@ const StudentAbsenceTable = () => {
                 {student.status}
               </Badge>
             </TableCell>
-            <TableCell align="center" className="flex gap-1">
-              <Edit className="h-4 w-4 cursor-pointer hover:text-yellow-500" />
-            </TableCell>
+            <TableCell>{student.description}</TableCell>
           </TableRow>
         ))}
       </TableBody>

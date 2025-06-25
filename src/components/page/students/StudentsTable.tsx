@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Table,
@@ -8,16 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ArrowUpDown, Copy, Edit, Eye } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const studentData = [
   {
@@ -47,13 +41,11 @@ const studentData = [
 ];
 
 const StudentTable = () => {
+  const router = useRouter();
   return (
     <Table className="bg-white border-1">
       <TableHeader>
         <TableRow className="">
-          <TableHead align="center" className="">
-            <Input type="checkbox" className="w-4 h-4" />
-          </TableHead>
           <TableHead className="">
             <button className="flex justify-between items-center w-full">
               <span>No. Urut Siswa</span>{" "}
@@ -65,37 +57,18 @@ const StudentTable = () => {
               Nama Siswa <ArrowUpDown className="ml-1 h-4 w-4" />
             </button>
           </TableHead>
-          <TableHead>
-            <button className="flex justify-between items-center w-full ">
-              NIK <ArrowUpDown className="ml-1 h-4 w-4" />
-            </button>
-          </TableHead>
-          <TableHead>
-            <button className="flex justify-between items-center w-full ">
-              Tahun Ajaran <ArrowUpDown className="ml-1 h-4 w-4" />
-            </button>
-          </TableHead>
-          <TableHead>
-            <button className="flex justify-between items-center w-full ">
-              Kelas <ArrowUpDown className="ml-1 h-4 w-4" />
-            </button>
-          </TableHead>
-          <TableHead>
-            <button className="flex justify-between items-center w-full">
-              Tanggal Lahir <ArrowUpDown className="ml-1 h-4 w-4" />
-            </button>
-          </TableHead>
-          <TableHead align="center">
-            <button className="flex justify-between">Action</button>
-          </TableHead>
+          <TableHead>NIK</TableHead>
+          <TableHead>Tahun Ajaran</TableHead>
+          <TableHead>Kelas</TableHead>
+          <TableHead>Tanggal Lahir</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="">
         {studentData.map((student, idx) => (
-          <TableRow key={idx}>
-            <TableCell>
-              <Input type="checkbox" className="w-4 h-4" />
-            </TableCell>
+          <TableRow
+            key={idx}
+            onClick={() => router.push(`/students/${student.no}`)}
+          >
             <TableCell>{student.no}</TableCell>
             <TableCell>
               <div className="font-medium">{student.name}</div>
@@ -106,13 +79,6 @@ const StudentTable = () => {
             <TableCell>{student.year}</TableCell>
             <TableCell>{student.class}</TableCell>
             <TableCell>{student.birthDate}</TableCell>
-            <TableCell align="center" className="flex gap-1">
-              {" "}
-              <Edit className="h-4 w-4 cursor-pointer hover:text-yellow-500" />
-              <Link href={`/students/${student.no}`}>
-                <Eye className="h-4  w-4 cursor-pointer hover:text-yellow-500" />
-              </Link>
-            </TableCell>
           </TableRow>
         ))}
       </TableBody>

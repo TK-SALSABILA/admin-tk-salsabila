@@ -4,6 +4,9 @@ import React from "react";
 import { dummyRaporSiswa } from "@/data/studentsData";
 import StudentRaportTable from "./StudentRaportTable";
 import StudentsRaportFilter from "./StudentRaportFilter";
+import { Badge } from "@/components/ui/badge";
+import { FileDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const StudentRaportTab = () => {
   return (
@@ -20,7 +23,12 @@ const StudentRaportTab = () => {
           children={<p>{dummyRaporSiswa.length}</p>}
         />
       </div>
-      <StudentsRaportFilter/>
+      <div className="flex justify-between ">
+        <StudentsRaportFilter />
+        <Button variant={"outline"} className="border-yellow-500 text-yellow-500 hover:text-yellow-600">
+          <FileDown className=""/> Export
+        </Button>
+      </div>
       <StudentRaportTable />
     </div>
   );

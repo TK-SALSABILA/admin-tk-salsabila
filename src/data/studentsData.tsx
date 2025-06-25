@@ -3,51 +3,61 @@ export const dummyAbsensiSiswa = [
     tahunAjaran: "2025-2026",
     tanggal: "4 April 2026",
     status: "Absen",
+    description: "Sakit sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "3 April 2026",
     status: "Sakit",
+    description: "Sakit sementara aja",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "2 April 2026",
     status: "Izin",
+    description: "Izin sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "1 April 2026",
     status: "Alpha",
+    description: "Alpha sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "31 Maret 2026",
     status: "Absen",
+    description: "Absen sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "30 Maret 2026",
     status: "Absen",
+    description: "Absen sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "29 Maret 2026",
     status: "Alpha",
+    description: "Alpha sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "28 Maret 2026",
     status: "Izin",
+    description: "Izin sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "27 Maret 2026",
     status: "Sakit",
+    description: "Sakit sementara",
   },
   {
     tahunAjaran: "2025-2026",
     tanggal: "26 Maret 2026",
     status: "Absen",
+    description: "Absen sementara",
   },
 ];
 

@@ -52,9 +52,6 @@ const StudentRaportTable = () => {
               Nilai <ArrowUpDown className="ml-1 h-4 w-4" />
             </button>
           </TableHead>
-          <TableHead align="center">
-            <button className="flex justify-between">Action</button>
-          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="">
@@ -82,9 +79,6 @@ const StudentRaportTable = () => {
               >
                 {student.nilai < student.kkm ? "Tidak Lulus" : "Lulus"}
               </p>
-            </TableCell>
-            <TableCell align="center" className="flex gap-1">
-              <Edit className="h-4 w-4 cursor-pointer hover:text-yellow-500" />
             </TableCell>
           </TableRow>
         ))}

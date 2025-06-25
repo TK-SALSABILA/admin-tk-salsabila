@@ -13,7 +13,7 @@ const StudentsRaportFilter = () => {
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
       <div className="flex gap-2 w-full md:w-auto">
         <Select>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-[100px] lg:w-[150px]">
             <SelectValue placeholder="Semester" />
           </SelectTrigger>
           <SelectContent>
@@ -23,7 +23,7 @@ const StudentsRaportFilter = () => {
         </Select>
 
         <Select>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Mata Pelajaran" />
           </SelectTrigger>
           <SelectContent>
@@ -33,7 +33,7 @@ const StudentsRaportFilter = () => {
           </SelectContent>
         </Select>
         <Select>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Jenis Penilaian" />
           </SelectTrigger>
           <SelectContent>
