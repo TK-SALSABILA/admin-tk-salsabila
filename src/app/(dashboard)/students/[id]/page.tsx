@@ -1,4 +1,4 @@
-import StudentsPageDetail from "@/components/page/studentDetail/StudentsPageDetail";
+import StudentsPageDetail from "@/components/pages/studentDetail/StudentsPageDetail";
 
 export default async function StudentsDetail({
   params,

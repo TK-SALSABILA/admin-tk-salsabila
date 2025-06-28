@@ -2,32 +2,29 @@ import React from "react";
 import { Separator } from "@/components/ui/separator";
 
 interface PageHeaderProps {
-  pageName: string;
+  pages: [string, ...string[]]; 
   pageDesc: string;
-  page2?: string;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({
-  pageName,
-  pageDesc,
-  page2,
-}) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ pages, pageDesc }) => {
+  const lastPage = pages[pages.length - 1];
+
   return (
     <div className="space-y-2">
       <div className="text-sm text-muted-foreground">
-        Main /{" "}
-        {!page2 ? (
-          <span className="text-foreground font-medium">{pageName}</span>
-        ) : (
-          <>
-            <span>{pageName}</span>
-            <span className="text-foreground font-medium"> / {page2}</span>
-          </>
-        )}
+        Main /
+        {pages.map((page, index) => (
+          <span key={index}>
+            {" "}
+            {index === pages.length - 1 ? (
+              <span className="text-foreground font-medium">{page}</span>
+            ) : (
+              <span>{page} /</span>
+            )}
+          </span>
+        ))}
       </div>
-      <h1 className="text-2xl font-bold tracking-tight">
-        {page2 ? page2 : pageName}
-      </h1>
+      <h1 className="text-2xl font-bold tracking-tight">{lastPage}</h1>
       <p className="text-sm text-muted-foreground">{pageDesc}</p>
       <Separator />
     </div>

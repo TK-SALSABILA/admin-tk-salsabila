@@ -6,7 +6,7 @@ import StudentsFilter from './StudentsFilter'
 const StudentsPage = () => {
   return (
     <div className='space-y-6'>
-      <PageHeader pageName="Data Siswa" pageDesc="Pilih tahun ajaran dan kelas siswa untuk ditampilkan" />
+      <PageHeader pages={["Data Siswa"]} pageDesc="Pilih tahun ajaran dan kelas siswa untuk ditampilkan" />
       <StudentsFilter/>
       <StudentTable/>
     </div>

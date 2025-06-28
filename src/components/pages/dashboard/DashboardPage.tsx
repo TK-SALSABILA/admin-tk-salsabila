@@ -1,14 +1,13 @@
 import React from "react";
 import PageHeader from "@/components/shared/PageHeder";
-import StatCard from "@/components/page/dashboard/StatCard";
-import LineChartCard from "@/components/page/dashboard/LineChartCard";
-import DonutChartCard from "@/components/page/dashboard/DonutChartCard";
-
+import StatCard from "./StatCard";
+import DonutChartCard from "./DonutChartCard";
+import LineChartCard from "./LineChartCard";
 const DashboardPage = () => {
   return (
     <section className="space-y-6">
       <PageHeader
-        pageName="Dashboard"
+        pages={["Dashboard"]}
         pageDesc="Data sekolah dan pembelajaran terkini"
       />
 

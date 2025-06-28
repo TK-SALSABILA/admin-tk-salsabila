@@ -15,7 +15,7 @@ export default function CustomCard({
   return (
     <Card>
       {title && (
-        <CardHeader className="flex flex-row items-start justify-between pb-2">
+        <CardHeader className="flex flex-row items-start justify-between pb-1">
           <h4 className="text-sm font-medium">{title}</h4>
           {headerRight}
         </CardHeader>

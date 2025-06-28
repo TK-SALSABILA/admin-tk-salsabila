@@ -1,13 +1,7 @@
-import React from 'react'
+import FinancePage from "@/components/pages/finance/FinancePage";
 
 const Finance = () => {
-  return (
-    <div>
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-2xl">SABAR BANG ANE TIDUR DULU 🥶</div>
-      </div>
-    </div>
-  );
-}
+  return <FinancePage />;
+};
 
-export default Finance
+export default Finance;

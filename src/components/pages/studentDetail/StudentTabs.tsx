@@ -2,7 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import StudentRaportTab from "./raport/StudentRaportTab";
 import StudentAbsenceTabs from "./absence/StudentAbsenceTab";
-import StudentSavingTab from "./savings/StudentSavingTab";
 import PersonalDataTab from "./personal-data/PersonalDataTab";
 import ParentDataTab from "./parent-data/ParentDataTab";
 

@@ -1,14 +1,21 @@
-import CustomCard from "@/components/shared/CustomCard";
+"use client";
+
 import { paymentData } from "@/data/studentsData";
 import { CheckCircle } from "lucide-react";
 import React from "react";
-import StudentSavingTable from "./StudentSavingTable";
+import { StudentSavingTable } from "./StudentSavingTable";
+import { useSearchParams } from "next/navigation";
+import StudentSavingFilters from "./StudentSavingFilters";
+import CustomCardFinance from "@/components/shared/CustomCardFinance";
 
 const StudentSavingTab = () => {
   // Filter berdasarkan jenis pembayaran
   const sppPayments = paymentData.filter(
     (item) => item.jenisPembayaran === "SPP"
   );
+
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
 
   // Hitung total pembayaran
   const totalAmount = paymentData.reduce((total, item) => {
@@ -26,35 +33,21 @@ const StudentSavingTab = () => {
   return (
     <div className="w-full space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <CustomCard
+        <CustomCardFinance
           title="Total Tabungan"
+          total={totalAmount}
+          desc={`dari ${paymentData.length} pembayaran`}
           headerRight={<CheckCircle />}
-          children={
-            <div className="space-y-2">
-              <p className="text-xl font-semibold">
-                {`Rp${totalAmount.toLocaleString("id-ID")}`}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                dari {paymentData.length} pembayaran
-              </p>
-            </div>
-          }
         />
-        <CustomCard
+        <CustomCardFinance
           title="Total Denda"
+          total={totalDenda}
+          desc={`dari ${sppPayments.length} pembayaran`}
           headerRight={<CheckCircle />}
-          children={
-            <div>
-              <p className="text-xl font-semibold">
-                {`Rp${totalDenda.toLocaleString("id-ID")}`}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                dari {paymentData.length} pembayaran
-              </p>
-            </div>
-          }
+          
         />
       </div>
+       <StudentSavingFilters/>
       <StudentSavingTable />
     </div>
   );
