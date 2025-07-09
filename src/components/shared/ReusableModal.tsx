@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/alert";
+} from "@/components/ui/dialog";
 import { X } from "lucide-react";
 
 // Types untuk button
@@ -95,3 +95,4 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
     </Dialog>
   );
 };
+export default ReusableModal;

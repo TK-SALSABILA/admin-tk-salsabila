@@ -1,89 +1,79 @@
-"use client";
-
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { ArrowUpDown, Copy, Edit, Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { TableColumn, TableAction } from "@/types/table";
+import DataTable from "@/components/shared/DataTable";
+import { Edit, Eye } from "lucide-react";
+import { createBadgeRenderer } from "@/utils/tableHelper";
 
-const studentData = [
-  {
-    no: 1,
-    name: "Nama Siswa A",
-    year: "2025-2026",
-    class: "TK A",
-    nik: "1234",
-    birthDate: "1 April 2020",
-  },
-  {
-    no: 2,
-    name: "Nama Siswa B",
-    year: "2025-2026",
-    class: "TK B",
-    nik: "5678",
-    birthDate: "2 Mei 2020",
-  },
-  {
-    no: 3,
-    name: "Nama Siswa C",
-    year: "2025-2026",
-    class: "TK C",
-    nik: "5678",
-    birthDate: "2 Agustus 2020",
-  },
-];
+interface Student {
+  id: string;
+  fullName: string;
+  nickName: string;
+  nik: string;
+  gender: string;
+  dateBirth: string;
+  birthOrder: string;
+}
 
-const StudentTable = () => {
-  const router = useRouter();
+interface StudentTableProps {
+  data: Student[];
+}
+
+export const StudentTable: React.FC<StudentTableProps> = ({ data }) => {
+  const genderColor = (gender: string) =>
+    gender === "Laki-laki"
+      ? "bg-blue-100 text-blue-600 border-blue-200 border-2 hover:bg-blue-200"
+      : "bg-pink-100 text-pink-600 border-pink-200 border-2 hover:bg-pink-200";
+
+  const columns: TableColumn[] = [
+    {
+      key: "fullName",
+      title: "Nama Lengkap",
+      sortable: true,
+    },
+    {
+      key: "nickName",
+      title: "Nama Panggilan",
+    },
+    {
+      key: "nik",
+      title: "NIK",
+    },
+    {
+      key: "gender",
+      title: "Jenis Kelamin",
+      render: createBadgeRenderer(genderColor),
+    },
+    {
+      key: "dateBirth",
+      title: "Tanggal Lahir",
+    },
+    {
+      key: "birthOrder",
+      title: "Anak Ke-",
+    },
+  ];
+
+  const actions: TableAction[] = [
+    {
+      icon: <Eye className="h-4 w-4" />,
+      tooltip: "Lihat Detail",
+      onClick: (row) => console.log("Lihat detail:", row),
+      className: "hover:text-blue-500",
+    },
+    {
+      icon: <Edit className="h-4 w-4" />,
+      tooltip: "Edit Data",
+      onClick: (row) => console.log("Edit:", row),
+      className: "hover:text-yellow-500",
+    },
+  ];
+
   return (
-    <Table className="bg-white border-1">
-      <TableHeader>
-        <TableRow className="">
-          <TableHead className="">
-            <button className="flex justify-between items-center w-full">
-              <span>No. Urut Siswa</span>{" "}
-              <ArrowUpDown className="ml-1 h-4 w-4" />
-            </button>
-          </TableHead>
-          <TableHead>
-            <button className="flex justify-between items-center w-full ">
-              Nama Siswa <ArrowUpDown className="ml-1 h-4 w-4" />
-            </button>
-          </TableHead>
-          <TableHead>NIK</TableHead>
-          <TableHead>Tahun Ajaran</TableHead>
-          <TableHead>Kelas</TableHead>
-          <TableHead>Tanggal Lahir</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody className="">
-        {studentData.map((student, idx) => (
-          <TableRow
-            key={idx}
-            onClick={() => router.push(`/students/${student.no}`)}
-          >
-            <TableCell>{student.no}</TableCell>
-            <TableCell>
-              <div className="font-medium">{student.name}</div>
-            </TableCell>
-            <TableCell className="flex justify-between">
-              {student.nik} <Copy className="h-4 w-4" />
-            </TableCell>
-            <TableCell>{student.year}</TableCell>
-            <TableCell>{student.class}</TableCell>
-            <TableCell>{student.birthDate}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <DataTable
+      columns={columns}
+      data={data}
+      actions={actions}
+      className="shadow-sm"
+    />
   );
 };
-
-export default StudentTable;

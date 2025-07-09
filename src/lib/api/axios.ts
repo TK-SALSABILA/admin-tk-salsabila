@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth-store';
+import { BASE_URL } from '@/constants/api';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: `${BASE_URL}/api/v1/`,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
