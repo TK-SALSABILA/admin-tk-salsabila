@@ -1,9 +1,9 @@
 import { CombinedStudentFormData } from "@/schema/studentSchema";
 import apiClient from "../axios";
-import { GetAllApiResponse, GetStudentParam } from "../type";
+import { GetAllApiResponse, PaginationParams } from "../type";
 
 export const studentService = {
-  getStudents: async (param: GetStudentParam) => {
+  getStudents: async (param: PaginationParams) => {
     try {
       const response = await apiClient.get<GetAllApiResponse>("/student/record",{
         params: param

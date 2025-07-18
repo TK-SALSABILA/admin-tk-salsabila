@@ -6,11 +6,13 @@ import React, { useState } from "react";
 import { FormCreateStudentData } from "./FormCreateStudentData";
 import { FormParentData } from "./FormParrentData";
 import { useCreateStudentMutations } from "@/hooks/mutation/useStudentMutations";
+import { useRouter } from "next/navigation";
 
 const StudentCreatePage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [studentData, setStudentData] = useState<StudentFormData | null>(null);
   const { mutateAsync, isPending } = useCreateStudentMutations();
+  const router = useRouter();
 
   const handleStudentFormNext = (data: StudentFormData) => {
     setStudentData(data);
@@ -24,6 +26,7 @@ const StudentCreatePage = () => {
         parent: parentData,
       };
       mutateAsync(completeData);
+      router.push("/students");
     }
   };
 

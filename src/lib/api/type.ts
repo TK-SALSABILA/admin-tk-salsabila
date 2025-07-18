@@ -1,4 +1,4 @@
-export interface GetStudentParam {
+export interface PaginationParams {
   page: number;
   rpp: number;
 }

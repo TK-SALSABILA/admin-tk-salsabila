@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,10 +20,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarDays, User, Users, GraduationCap } from "lucide-react";
-import { StudentFormData, studentSchema } from "@/schema/studentSchema";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ConfirmModal from "@/components/modal/ModalConfirmation";
+import GradeSelect from "@/components/form/GradeSelect";
+import { StudentFormData, studentSchema } from "@/schema/studentSchema";
 
 interface FormCreateStudentDataProps {
   onNext: (data: StudentFormData) => void;
@@ -34,33 +34,74 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
   onNext,
   initialData,
 }) => {
-  const form = useForm<StudentFormData>({
-    resolver: zodResolver(studentSchema),
-    mode: "onChange",
-    defaultValues: initialData || {
-      fullName: "",
-      nickName: "",
-      nik: "",
-      gender: undefined,
-      dateBirth: "",
-      birthOrder: "",
-      tribe: "",
-      address: "",
-      height: "",
-      weight: "",
-      gradeClass: {
+  const defaultValues = {
+    fullName: "",
+    nickName: "",
+    nik: "",
+    gender: undefined as "Laki-laki" | "Perempuan" | undefined,
+    dateBirth: "",
+    birthOrder: "",
+    tribe: "",
+    address: "",
+    height: "",
+    weight: "",
+    gradeClass: {
+      academicYear: "",
+      isCurrent: true,
+      gradeLog: {
+        id: "",
         gradeLevel: "",
-        academicYear: "",
       },
     },
+  } as const;
+  const resolver = zodResolver(studentSchema) as unknown as Resolver<StudentFormData>;
+
+  const form = useForm<StudentFormData>({
+    resolver: resolver,
+    defaultValues: initialData || defaultValues,
+    mode: "onChange", 
   });
 
   const onSubmit = (data: StudentFormData) => {
-    onNext(data);
+    onNext({
+      ...data,
+      dateBirth: formatDateForBackend(data.dateBirth),
+    });
   };
 
   const onCancel = () => {
     form.reset();
+  };
+
+  const handleGradeChange = (gradeId: string, gradeLevel: string) => {
+    form.setValue("gradeClass.gradeLog.id", gradeId);
+    form.setValue("gradeClass.gradeLog.gradeLevel", gradeLevel);
+  };
+
+  const formatDateForBackend = (dateString: string): string => {
+    if (!dateString) return "";
+
+    try {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        return `${dateString}T00:00:00`;
+      }
+      if (dateString.includes("T")) {
+        return dateString;
+      }
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        throw new Error("Invalid date");
+      }
+
+      const pad = (num: number) => num.toString().padStart(2, "0");
+      const year = date.getFullYear();
+      const month = pad(date.getMonth() + 1);
+      const day = pad(date.getDate());
+
+      return `${year}-${month}-${day}T00:00:00`;
+    } catch {
+      return `${dateString}T00:00:00`;
+    }
   };
 
   return (
@@ -125,7 +166,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
                 control={form.control}
                 name="gender"
                 render={({ field }) => (
-                  <FormItem className="">
+                  <FormItem>
                     <FormLabel>Jenis Kelamin</FormLabel>
                     <FormControl>
                       <RadioGroup
@@ -196,7 +237,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
                     <FormLabel>Suku</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Pilih suku siswa" />
                         </SelectTrigger>
                       </FormControl>
@@ -224,7 +265,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
                   <FormLabel>Alamat</FormLabel>
                   <FormControl>
                     <Textarea
-                      className="max-w-1/2"
+                      className="w-full"
                       placeholder="Masukan alamat siswa"
                       {...field}
                     />
@@ -292,27 +333,17 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="gradeClass.gradeLevel"
+                  name="gradeClass.gradeLog.id"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Kelas</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
+                      <GradeSelect
                         value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Pilih kelas" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="A">A</SelectItem>
-                          <SelectItem value="B">B</SelectItem>
-                          <SelectItem value="C">C</SelectItem>
-                          <SelectItem value="D">D</SelectItem>
-                          <SelectItem value="E">E</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        onChange={(id, level) => {
+                          field.onChange(id);
+                          handleGradeChange(id, level);
+                        }}
+                      />
                       <FormMessage />
                     </FormItem>
                   )}
@@ -329,7 +360,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Pilih tahun ajaran" />
                           </SelectTrigger>
                         </FormControl>
@@ -356,7 +387,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
                 trigger={
                   <Button
                     type="button"
-                    variant={"outline"}
+                    variant="outline"
                     className="text-yellow-500 border-yellow-500 hover:text-yellow-300"
                   >
                     Batal
@@ -379,3 +410,5 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
     </Card>
   );
 };
+
+export default FormCreateStudentData;

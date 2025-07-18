@@ -61,7 +61,12 @@ export const FormParentData: React.FC<FormParentDataProps> = ({
   });
 
   const handleSubmit = (data: ParentFormData) => {
-    onSubmit(data);
+    const formattedData = {
+      ...data,
+      fatherDateBirth: formatDateForBackend(data.fatherDateBirth),
+      motherDateBirth: formatDateForBackend(data.motherDateBirth),
+    };
+    onSubmit(formattedData);
   };
 
   const copyStudentAddressToFather = () => {
@@ -79,6 +84,38 @@ export const FormParentData: React.FC<FormParentDataProps> = ({
     form.reset();
     onBack();
   };
+
+ const formatDateForBackend = (dateString: string): string => {
+   if (!dateString) return "";
+
+   try {
+     // Jika format sudah YYYY-MM-DD, tambahkan time part tanpa Z
+     if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+       return `${dateString}T00:00:00`; // Hapus .000Z
+     }
+
+     // Jika format sudah ISO (ada T), hapus .000Z jika ada
+     if (dateString.includes("T")) {
+       return dateString.replace(/\.\d{3}Z$/, "");
+     }
+
+     // Untuk format lain, coba parse dan format ulang
+     const date = new Date(dateString);
+     if (isNaN(date.getTime())) {
+       throw new Error("Invalid date");
+     }
+
+     const pad = (num: number) => num.toString().padStart(2, "0");
+     const year = date.getFullYear();
+     const month = pad(date.getMonth() + 1);
+     const day = pad(date.getDate());
+
+     return `${year}-${month}-${day}T00:00:00`; // Tanpa Z
+   } catch {
+     // Fallback: return dengan format default tanpa Z jika parsing gagal
+     return `${dateString.split("T")[0]}T00:00:00`;
+   }
+ };
 
   return (
     <Card className="w-full">

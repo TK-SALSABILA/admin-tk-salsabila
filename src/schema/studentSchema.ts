@@ -1,32 +1,33 @@
 import { z } from "zod";
 
-
-export const studentSchema = z.object({
+const studentSchemaBase = z.object({
   fullName: z.string().min(1, "Nama lengkap wajib diisi"),
   nickName: z.string().min(1, "Nama panggilan wajib diisi"),
   nik: z.string().min(1, "NIK wajib diisi").max(16, "NIK maksimal 16 karakter"),
   gender: z.enum(["Laki-laki", "Perempuan"], {
     required_error: "Jenis kelamin wajib dipilih",
   }),
-  dateBirth: z
-    .string()
-    .refine((val) => !isNaN(Date.parse(val)), {
-      message: "Tanggal tidak valid",
-    })
-    .transform((val) => new Date(val).toISOString()),
+  dateBirth: z.string().min(1, "Tanggal lahir wajib diisi"),
   birthOrder: z.string().min(1, "Anak ke berapa wajib diisi"),
   tribe: z.string().min(1, "Suku wajib diisi"),
   address: z.string().min(1, "Alamat wajib diisi"),
   height: z.string().min(1, "Tinggi badan wajib diisi"),
   weight: z.string().min(1, "Berat badan wajib diisi"),
   gradeClass: z.object({
-    gradeLevel: z.string().min(1, "Kelas wajib dipilih"),
     academicYear: z.string().min(1, "Tahun ajaran wajib dipilih"),
+    isCurrent: z.boolean().default(true),
+    gradeLog: z.object({
+      id: z.string().min(1, "ID grade wajib diisi"),
+      gradeLevel: z.string().min(1, "Kelas wajib dipilih"),
+    }),
   }),
 });
 
+export const studentSchema = studentSchemaBase.strict();
 
-export const parentSchema = z.object({
+export type StudentFormData = z.infer<typeof studentSchema>;
+
+const parentSchemaBase = z.object({
   fatherName: z.string().min(1, "Nama ayah wajib diisi"),
   fatherDateBirth: z
     .string()
@@ -63,8 +64,10 @@ export const parentSchema = z.object({
   motherPhone: z.string().min(10, "Nomor telepon ibu minimal 10 digit"),
 });
 
+export const parentSchema = parentSchemaBase.strict();
 
-export type StudentFormData = z.infer<typeof studentSchema>;
 export type ParentFormData = z.infer<typeof parentSchema>;
-export type CombinedStudentFormData = StudentFormData & { parent: ParentFormData };
 
+export type CombinedStudentFormData = StudentFormData & {
+  parent: ParentFormData;
+};
