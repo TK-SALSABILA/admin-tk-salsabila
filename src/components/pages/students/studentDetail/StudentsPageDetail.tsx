@@ -11,7 +11,7 @@ const StudentsPageDetail = ({ id }: { id: string }) => {
         pageDesc="Data detail siswa mengenai akademik dan keuangan"
       />
       <StudentsProfile />
-      <StudentTabs />
+      <StudentTabs id={id}/>
     </div>
   );
 };

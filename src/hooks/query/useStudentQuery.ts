@@ -1,11 +1,19 @@
 import { studentService } from "@/lib/api/service/studentService";
-import { GetStudentParam } from "@/lib/api/type";
+import { PaginationParams } from "@/lib/api/type";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetStudentsQuery = (param: GetStudentParam) => {
+export const useGetStudentsQuery = (param: PaginationParams) => {
   return useQuery({
-    queryKey: ["student", param], // supaya cache beda per param
-    queryFn: () => studentService.getStudents(param), // ← harus pakai return!
+    queryKey: ["student", param], 
+    queryFn: () => studentService.getStudents(param), 
+  });
+};
+
+
+export const useGetStudentByIdQuery = (id: string) => {
+  return useQuery({
+    queryKey: ["student", id],
+    queryFn: () => studentService.getStudentById(id),
   });
 };
   

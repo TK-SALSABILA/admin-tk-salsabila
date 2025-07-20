@@ -4,3 +4,13 @@ export enum valueType {
   NILAI_PRAKTEK = "Nilai Praktek",
   REMEDIAL = "Remedial"
 }
+
+export interface Student {
+  id: string;
+  fullName: string;
+  nickName: string;
+  nik: string;
+  gender: string;
+  dateBirth: string;
+  birthOrder: string;
+}

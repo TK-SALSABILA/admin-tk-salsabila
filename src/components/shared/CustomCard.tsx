@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ReactNode } from "react";
 
 interface CustomCardProps {
@@ -13,14 +12,14 @@ export default function CustomCard({
   headerRight,
 }: CustomCardProps) {
   return (
-    <Card>
+    <div className="rounded-2xl border bg-white text-black shadow-sm">
       {title && (
-        <CardHeader className="flex flex-row items-start justify-between pb-1">
+        <div className="flex flex-row items-start justify-between p-4 pb-2">
           <h4 className="text-sm font-medium">{title}</h4>
           {headerRight}
-        </CardHeader>
+        </div>
       )}
-      <CardContent>{children}</CardContent>
-    </Card>
+      <div className="px-4 pb-4">{children}</div>
+    </div>
   );
 }

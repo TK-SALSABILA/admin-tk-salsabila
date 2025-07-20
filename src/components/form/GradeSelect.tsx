@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useGetGradeQuery } from "@/hooks/query/useGardeQuery";
+import { useGetGradeQuery } from "@/hooks/query/useGradeQuery";
 
 type Grade = {
   id: string;

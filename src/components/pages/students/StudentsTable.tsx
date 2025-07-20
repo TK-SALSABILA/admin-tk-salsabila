@@ -3,22 +3,16 @@ import { TableColumn, TableAction } from "@/types/table";
 import DataTable from "@/components/shared/DataTable";
 import { Edit, Eye } from "lucide-react";
 import { createBadgeRenderer } from "@/utils/tableHelper";
-
-interface Student {
-  id: string;
-  fullName: string;
-  nickName: string;
-  nik: string;
-  gender: string;
-  dateBirth: string;
-  birthOrder: string;
-}
+import { useRouter } from "next/navigation";
+import { Student } from "@/types/student";
+import ModalUpdateClass from '@/components/modal/ModalClassForm'
 
 interface StudentTableProps {
   data: Student[];
 }
 
 export const StudentTable: React.FC<StudentTableProps> = ({ data }) => {
+  const router = useRouter();
   const genderColor = (gender: string) =>
     gender === "Laki-laki"
       ? "bg-blue-100 text-blue-600 border-blue-200 border-2 hover:bg-blue-200"
@@ -57,7 +51,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({ data }) => {
     {
       icon: <Eye className="h-4 w-4" />,
       tooltip: "Lihat Detail",
-      onClick: (row) => console.log("Lihat detail:", row),
+      onClick: (row) => router.push(`/students/${row.id}`),
       className: "hover:text-blue-500",
     },
     {
@@ -69,11 +63,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({ data }) => {
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      actions={actions}
-      className="shadow-sm"
-    />
+    <>
+      <DataTable
+        columns={columns}
+        data={data}
+        actions={actions}
+        className="shadow-sm"
+      />
+      <ModalUpdateClass mode="edit" open={false} setOpen={() => {}}/>
+    </>
   );
 };

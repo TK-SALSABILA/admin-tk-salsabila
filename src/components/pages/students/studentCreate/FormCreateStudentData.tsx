@@ -24,6 +24,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ConfirmModal from "@/components/modal/ModalConfirmation";
 import GradeSelect from "@/components/form/GradeSelect";
 import { StudentFormData, studentSchema } from "@/schema/studentSchema";
+import { useRouter } from "next/navigation";
 
 interface FormCreateStudentDataProps {
   onNext: (data: StudentFormData) => void;
@@ -34,6 +35,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
   onNext,
   initialData,
 }) => {
+  const router = useRouter();
   const defaultValues = {
     fullName: "",
     nickName: "",
@@ -71,6 +73,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
 
   const onCancel = () => {
     form.reset();
+    router.push('/students')
   };
 
   const handleGradeChange = (gradeId: string, gradeLevel: string) => {

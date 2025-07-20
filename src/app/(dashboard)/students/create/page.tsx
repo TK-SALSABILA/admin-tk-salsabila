@@ -1,4 +1,4 @@
-import StudentCreatePage from '@/components/pages/studentCreate/StudentCreatePage'
+import StudentCreatePage from '@/components/pages/students/studentCreate/StudentCreatePage'
 import React from 'react'
 
 const CreateStudents = () => {

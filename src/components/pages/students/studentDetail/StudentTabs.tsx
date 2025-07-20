@@ -1,11 +1,15 @@
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import StudentRaportTab from "./raport/StudentRaportTab";
 import StudentAbsenceTabs from "./absence/StudentAbsenceTab";
 import PersonalDataTab from "./personal-data/PersonalDataTab";
 import ParentDataTab from "./parent-data/ParentDataTab";
+import { useGetStudentByIdQuery } from "@/hooks/query/useStudentQuery";
 
-const StudentTabs = () => {
+const StudentTabs = ({ id }: { id: string }) => {
+  const { data, isLoading } = useGetStudentByIdQuery(id);
   return (
     <Tabs defaultValue="personal-data" className="w-full">
       <TabsList>
