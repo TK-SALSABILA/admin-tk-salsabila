@@ -8,9 +8,10 @@ import React from "react";
 import ClassListTable from "./ClassListTable";
 import { Skeleton } from "@/components/ui/skeleton";
 import ClassListFIlter from "./ClassListFIlter";
+import LoadingSkeletonTable from "@/components/shared/LoadingSkeletonTable";
 
 const ClassListPage = () => {
-  const { data, isPending , isError} = useGetGradeQuery({ page: 1, rpp: 10 });
+  const { data, isPending, isError } = useGetGradeQuery({ page: 1, rpp: 10 });
   return (
     <div className="space-y-4">
       <PageHeader
@@ -30,29 +31,20 @@ const ClassListPage = () => {
         />
       </div>
       <div className="">
-        <ClassListFIlter/>
+        <ClassListFIlter />
       </div>
       <div className="">
-        {isPending && (
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        )}
-
-        {isError && (
+        {isPending ? (
+          <LoadingSkeletonTable />
+        ) : isError ? (
           <div className="flex w-full h-full items-center  text-red-500 font-semibold">
             <span className="text-center">
               Terjadi kesalahan saat mengambil data siswa.
             </span>
           </div>
+        ) : (
+          <ClassListTable data={data?.data || []} />
         )}
-        <ClassListTable data={data?.data || []} />
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
-import ModalCreateClass from "@/components/form/ModalClassForm";
+import ModalSubjectsForm from "@/components/form/ModalSubjectsForm";
 import ButtonOpenModal from "@/components/shared/ButtonOpenModal";
 import { ReusableFilter } from "@/components/shared/ReusableFilter";
 import { useState } from "react";
 
-const ClassListFIlter = () => {
+const SubjectsFilter = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -14,12 +14,12 @@ const ClassListFIlter = () => {
       />
       <ButtonOpenModal
         onClick={() => setOpen(true)}
-        text="Tambah Kelas"
+        text="Tambah Matpel"
         iconPosition="left"
       />
-      <ModalCreateClass mode="create" open={open} setOpen={setOpen} />
+      <ModalSubjectsForm mode="create" open={open} setOpen={setOpen} />
     </div>
   );
 };
 
-export default ClassListFIlter;
+export default SubjectsFilter;

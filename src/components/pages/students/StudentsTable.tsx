@@ -5,7 +5,7 @@ import { Edit, Eye } from "lucide-react";
 import { createBadgeRenderer } from "@/utils/tableHelper";
 import { useRouter } from "next/navigation";
 import { Student } from "@/types/student";
-import ModalUpdateClass from '@/components/modal/ModalClassForm'
+import ModalUpdateClass from "@/components/form/ModalClassForm";
 
 interface StudentTableProps {
   data: Student[];
@@ -70,7 +70,7 @@ export const StudentTable: React.FC<StudentTableProps> = ({ data }) => {
         actions={actions}
         className="shadow-sm"
       />
-      <ModalUpdateClass mode="edit" open={false} setOpen={() => {}}/>
+      <ModalUpdateClass mode="edit" open={false} setOpen={() => {}} />
     </>
   );
 };

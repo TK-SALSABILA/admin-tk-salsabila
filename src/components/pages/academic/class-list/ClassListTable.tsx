@@ -4,7 +4,7 @@ import { TableColumn, TableAction } from "@/types/table";
 import DataTable from "@/components/shared/DataTable";
 import { Edit } from "lucide-react";
 import { ClassData } from "@/types/grade";
-import ModalUpdateClass from "@/components/modal/ModalClassForm";
+import ModalUpdateClass from "@/components/form/ModalClassForm";
 
 interface StudentTableProps {
   data: ClassData[];
@@ -12,7 +12,9 @@ interface StudentTableProps {
 
 const ClassListTable: React.FC<StudentTableProps> = ({ data }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedClass, setSelectedClass] = useState<ClassData | undefined>(undefined);
+  const [selectedClass, setSelectedClass] = useState<ClassData | undefined>(
+    undefined
+  );
   const columns: TableColumn[] = [
     {
       key: "gradeLevel",

@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useCreateGradeMutation } from "@/hooks/mutation/useGradeMutations";
-import ConfirmModal from "./ModalConfirmation";
+import ConfirmModal from "../modal/ModalConfirmation";
 import { Trash, Trash2 } from "lucide-react";
 
 interface ModalClassFormProps {

@@ -49,7 +49,7 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
 
       <DialogContent
         showCloseButton={false}
-        className={`max-w-2xl ${className}`}
+        className={`max-w-4xl w-full ${className}`}
       >
         <DialogHeader className="flex flex-row justify-between space-y-0">
           <div className="">

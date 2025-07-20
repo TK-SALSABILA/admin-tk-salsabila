@@ -17,10 +17,15 @@ type Grade = {
 
 type GradeSelectProps = {
   value?: string;
-  onChange: (id: string, level: string) => void;
+  withLevel?: boolean;
+  onChange: (id: string, level?: string) => void;
 };
 
-const GradeSelect: React.FC<GradeSelectProps> = ({ value, onChange }) => {
+const GradeSelect: React.FC<GradeSelectProps> = ({
+  value,
+  onChange,
+  withLevel = true,
+}) => {
   const [page, setPage] = useState(1);
   const [grades, setGrades] = useState<Grade[]>([]);
   const { data, isLoading } = useGetGradeQuery({ page, rpp: 10 });
@@ -29,7 +34,12 @@ const GradeSelect: React.FC<GradeSelectProps> = ({ value, onChange }) => {
 
   useEffect(() => {
     if (data?.data) {
-      setGrades((prev) => [...prev, ...data.data]);
+      setGrades((prev) => {
+        const newItems = data.data.filter(
+          (item: Grade) => !prev.some((existing) => existing.id === item.id)
+        );
+        return [...prev, ...newItems];
+      });
     }
   }, [data]);
 
@@ -42,21 +52,38 @@ const GradeSelect: React.FC<GradeSelectProps> = ({ value, onChange }) => {
     }
   };
 
-  const handleValueChange = (value: string) => {
-    const selectedGrade = grades.find((grade) => grade.id === value);
-    if (selectedGrade) {
-      onChange(value, selectedGrade.gradeLevel);
+  const handleValueChange = (selectedValue: string) => {
+    const selectedGrade = grades.find((grade) =>
+      withLevel
+        ? grade.gradeLevel === selectedValue
+        : grade.id === selectedValue
+    );
+
+    if (!selectedGrade) return;
+
+    if (withLevel) {
+      onChange(selectedGrade.id, selectedGrade.gradeLevel);
+    } else {
+      onChange(selectedGrade.id);
     }
   };
 
+  // Untuk menentukan value yang akan di-set ke Select
+  const selectValue = withLevel
+    ? grades.find((grade) => grade.gradeLevel === value)?.gradeLevel || value
+    : value;
+
   return (
-    <Select value={value} onValueChange={handleValueChange}>
+    <Select value={selectValue} onValueChange={handleValueChange}>
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Pilih Kelas" />
       </SelectTrigger>
       <SelectContent ref={contentRef} onScroll={handleScroll}>
         {grades.map((grade) => (
-          <SelectItem key={grade.id} value={grade.id}>
+          <SelectItem
+            key={grade.id}
+            value={withLevel ? grade.gradeLevel : grade.id}
+          >
             TK {grade.gradeLevel}
           </SelectItem>
         ))}

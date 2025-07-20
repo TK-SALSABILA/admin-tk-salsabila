@@ -56,12 +56,14 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
       },
     },
   } as const;
-  const resolver = zodResolver(studentSchema) as unknown as Resolver<StudentFormData>;
+  const resolver = zodResolver(
+    studentSchema
+  ) as unknown as Resolver<StudentFormData>;
 
   const form = useForm<StudentFormData>({
     resolver: resolver,
     defaultValues: initialData || defaultValues,
-    mode: "onChange", 
+    mode: "onChange",
   });
 
   const onSubmit = (data: StudentFormData) => {
@@ -73,7 +75,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
 
   const onCancel = () => {
     form.reset();
-    router.push('/students')
+    router.push("/students");
   };
 
   const handleGradeChange = (gradeId: string, gradeLevel: string) => {
@@ -344,7 +346,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
                         value={field.value}
                         onChange={(id, level) => {
                           field.onChange(id);
-                          handleGradeChange(id, level);
+                          handleGradeChange(id, level || "");
                         }}
                       />
                       <FormMessage />
