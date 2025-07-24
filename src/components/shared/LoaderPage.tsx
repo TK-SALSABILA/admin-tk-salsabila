@@ -3,7 +3,7 @@ import React from 'react'
 
 const LoaderPage = () => {
   return (
-    <div>
+    <div className='flex items-center justify-center h-screen'>
       <Image src="/loader.gift" alt="loader" width={100} height={100} />
     </div>
   )

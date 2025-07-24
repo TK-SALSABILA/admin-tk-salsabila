@@ -11,7 +11,7 @@ export const useCreateGradeMutation = () => {
     },
     mutationKey: ["create-grade"],
     onSuccess: () => {
-      query.invalidateQueries({queryKey: ["grade"]});
+      query.invalidateQueries({ queryKey: ["grade"] });
       toast.success("Kelas berhasil ditambahkan");
     },
     onError: () => {
@@ -19,5 +19,20 @@ export const useCreateGradeMutation = () => {
     },
   });
 };
-export const useUpdateGradeMutation = () => {};
+export const useUpdateGradeMutation = () => {
+  const query = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: gradeSchemaForm }) => {
+      return gradeService.updateGrade({ id, data });
+    },
+    mutationKey: ["update-grade"],
+    onSuccess: () => {
+      query.invalidateQueries({ queryKey: ["grade"] });
+      toast.success("Kelas berhasil diupdate");
+    },
+    onError: () => {
+      toast.error("Gagal update kelas");
+    },
+  });
+};
 export const useDeleteGradeMutation = () => {};

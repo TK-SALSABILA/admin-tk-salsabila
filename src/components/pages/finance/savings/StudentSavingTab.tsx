@@ -7,9 +7,10 @@ import { StudentSavingTable } from "./StudentSavingTable";
 import { useSearchParams } from "next/navigation";
 import StudentSavingFilters from "./StudentSavingFilters";
 import CustomCardFinance from "@/components/shared/CustomCardFinance";
+import { useGetSavingsQuery } from "@/hooks/query/useSavingQuery";
 
 const StudentSavingTab = () => {
-  // Filter berdasarkan jenis pembayaran
+  const { data, isPending } = useGetSavingsQuery({ page: 1, rpp: 10 });
   const sppPayments = paymentData.filter(
     (item) => item.jenisPembayaran === "SPP"
   );
@@ -44,10 +45,9 @@ const StudentSavingTab = () => {
           total={totalDenda}
           desc={`dari ${sppPayments.length} pembayaran`}
           headerRight={<CheckCircle />}
-          
         />
       </div>
-       <StudentSavingFilters/>
+      <StudentSavingFilters />
       <StudentSavingTable />
     </div>
   );

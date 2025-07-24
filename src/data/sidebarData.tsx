@@ -1,5 +1,6 @@
 import { SidebarItem } from "@/types/layout";
 import {
+  Activity,
   Book,
   BookOpen,
   DollarSign,
@@ -48,20 +49,6 @@ export const sidebarItems: SidebarItem[] = [
     label: "Raport",
     icon: Book,
     href: "/raport",
-    //   subItems: [
-    //     {
-    //       id: "laporan-nilai",
-    //       label: "Laporan Nilai",
-    //       icon: BarChart3,
-    //       href: "/reports/grades",
-    //     },
-    //     {
-    //       id: "laporan-kehadiran",
-    //       label: "Laporan Kehadiran",
-    //       icon: FileText,
-    //       href: "/reports/attendance",
-    //     },
-    //   ],
   },
   {
     id: "keuangan",
@@ -69,10 +56,10 @@ export const sidebarItems: SidebarItem[] = [
     icon: DollarSign,
     href: "/finance",
   },
-  // {
-  //   id: "pengaturan",
-  //   label: "Pengaturan",
-  //   icon: Settings,
-  //   href: "/settings",
-  // },
+  {
+    id: "kegiatan",
+    label: "Kegiatan",
+    icon: Activity,
+    href: "/activity",
+  },
 ];

@@ -15,7 +15,10 @@ import { gradeSchema, gradeSchemaForm } from "@/schema/gradeShema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useCreateGradeMutation } from "@/hooks/mutation/useGradeMutations";
+import {
+  useCreateGradeMutation,
+  useUpdateGradeMutation,
+} from "@/hooks/mutation/useGradeMutations";
 import ConfirmModal from "../modal/ModalConfirmation";
 import { Trash, Trash2 } from "lucide-react";
 
@@ -23,7 +26,7 @@ interface ModalClassFormProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   mode: "create" | "edit";
-  initialData?: gradeSchemaForm & { id: string }; // Pastikan ada id untuk edit/delete
+  initialData?: gradeSchemaForm & { id: string }; 
   onSuccess?: () => void;
 }
 
@@ -34,7 +37,10 @@ const ModalClassForm = ({
   initialData,
   onSuccess,
 }: ModalClassFormProps) => {
-  const { mutateAsync: createMutation } = useCreateGradeMutation();
+  const { mutateAsync: createMutation, isPending: isPendingCreate } =
+    useCreateGradeMutation();
+  const { mutateAsync: updateMutation, isPending: updatePending } =
+    useUpdateGradeMutation();
 
   const form = useForm<gradeSchemaForm>({
     resolver: zodResolver(gradeSchema),
@@ -44,8 +50,6 @@ const ModalClassForm = ({
   });
 
   const { control, handleSubmit, reset } = form;
-
-  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -57,7 +61,7 @@ const ModalClassForm = ({
     if (mode === "create") {
       await createMutation(data);
     } else if (mode === "edit" && initialData?.id) {
-      // await updateMutation({ ...data, id: initialData.id });
+      await updateMutation({ id: initialData.id, data });
     }
 
     reset();
@@ -99,7 +103,7 @@ const ModalClassForm = ({
             />
 
             <div className="flex justify-between items-center pt-4">
-              {mode === "edit" && (
+              {/* {mode === "edit" && (
                 <ConfirmModal
                   open={confirmDelete}
                   onOpenChange={setConfirmDelete}
@@ -116,7 +120,7 @@ const ModalClassForm = ({
                     </Button>
                   }
                 />
-              )}
+              )} */}
 
               <div className="flex gap-2 ml-auto">
                 <Button
@@ -124,6 +128,7 @@ const ModalClassForm = ({
                   variant="outline"
                   className="border-yellow-300"
                   onClick={() => setOpen(false)}
+                  disabled={isPendingCreate || updatePending}
                 >
                   Batal
                 </Button>

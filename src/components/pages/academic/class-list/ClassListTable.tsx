@@ -28,7 +28,7 @@ const ClassListTable: React.FC<StudentTableProps> = ({ data }) => {
     },
     {
       key: "student_count",
-      title: "Jenjang Kelas",
+      title: "Jumlah Siswa",
       sortable: true,
     },
   ];

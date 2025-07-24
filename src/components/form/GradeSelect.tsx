@@ -84,7 +84,7 @@ const GradeSelect: React.FC<GradeSelectProps> = ({
             key={grade.id}
             value={withLevel ? grade.gradeLevel : grade.id}
           >
-            TK {grade.gradeLevel}
+            {grade.gradeLevel}
           </SelectItem>
         ))}
       </SelectContent>

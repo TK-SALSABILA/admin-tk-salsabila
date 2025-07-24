@@ -343,6 +343,7 @@ export const FormCreateStudentData: React.FC<FormCreateStudentDataProps> = ({
                     <FormItem>
                       <FormLabel>Kelas</FormLabel>
                       <GradeSelect
+                        withLevel={true}
                         value={field.value}
                         onChange={(id, level) => {
                           field.onChange(id);

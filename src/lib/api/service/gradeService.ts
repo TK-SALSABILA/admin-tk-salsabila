@@ -14,7 +14,7 @@ export const gradeService = {
     }
   },
 
-  async createGrade(data:gradeSchemaForm){
+  async createGrade(data: gradeSchemaForm) {
     try {
       const response = await apiClient.post("/grade/create", data);
       return response.data;
@@ -22,5 +22,14 @@ export const gradeService = {
       console.log(error);
       throw error;
     }
-  }
+  },
+
+  async updateGrade({ id, data }: { id: string; data: gradeSchemaForm }) {
+    try {
+      const response = await apiClient.patch(`/grade/update/${id}`, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

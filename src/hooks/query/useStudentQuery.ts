@@ -9,6 +9,12 @@ export const useGetStudentsQuery = (param: PaginationParams) => {
   });
 };
 
+export const useGetParentStudentByStudentIdQuery = (id: string) => {
+  return useQuery({
+    queryKey: ["parent", id],
+    queryFn: () => studentService.getParentStudentByStudentId(id),
+  });
+}
 
 export const useGetStudentByIdQuery = (id: string) => {
   return useQuery({

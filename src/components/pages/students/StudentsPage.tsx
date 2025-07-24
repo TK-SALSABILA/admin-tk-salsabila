@@ -6,13 +6,29 @@ import StudentsFilter from "./StudentsFilter";
 import { useGetStudentsQuery } from "@/hooks/query/useStudentQuery";
 import { StudentTable } from "./StudentsTable";
 import { Skeleton } from "@/components/ui/skeleton"; // assuming you're using shadcn/ui
+import { useRouter, useSearchParams } from "next/navigation";
+import { createURLParamsHelper } from "@/utils/urlParams";
+import CustomPagination from "@/components/shared/CustomPagination";
+import LoadingSkeletonTable from "@/components/shared/LoadingSkeletonTable";
 
 const StudentsPage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlParams = createURLParamsHelper(searchParams, router);
+  const paginationParams = urlParams.getPaginationParams(1, 10);
   const {
     data: students,
-    isLoading,
+    isPending,
     isError,
-  } = useGetStudentsQuery({ page: 1, rpp: 10 });
+  } = useGetStudentsQuery(paginationParams);
+
+  const handlePageChange = (page: number) => {
+    urlParams.updatePage(page);
+  };
+
+  const handleItemChange = (rpp: number) => {
+    urlParams.updateItemsPerPage(rpp);
+  };
 
   return (
     <div className="space-y-6">
@@ -22,32 +38,29 @@ const StudentsPage = () => {
       />
       <StudentsFilter />
 
-      {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      )}
-
-      {isError && (
+      {isPending ? (
+        <LoadingSkeletonTable />
+      ) : isError ? (
         <div className="flex w-full h-full items-center  text-red-500 font-semibold">
           <span className="text-center">
             Terjadi kesalahan saat mengambil data siswa.
           </span>
         </div>
+      ) : (
+        <StudentTable data={students?.data} />
       )}
 
-      {!isLoading && students?.data?.length === 0 && (
-        <div className="text-center text-gray-500">Belum ada data siswa.</div>
-      )}
-
-      {students?.data && students.data.length > 0 && (
-        <StudentTable data={students.data} />
+      {/* Show pagination only if data exists and not loading */}
+      {!isPending && !isError && students?.meta && (
+        <CustomPagination
+          currentPage={paginationParams.page}
+          itemsPerPage={paginationParams.rpp}
+          totalItems={students.meta.totalRecords}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemChange}
+          showItemsPerPageSelector={true}
+          itemsPerPageOptions={[5, 10, 25, 50]}
+        />
       )}
     </div>
   );

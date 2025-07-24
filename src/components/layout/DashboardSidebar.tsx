@@ -2,16 +2,12 @@
 
 import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SidebarTooltip from "./sidebar/SidebarTooltip";
 import { SidebarItem } from "@/types/layout";
 import { sidebarItems } from "@/data/sidebarData";
-
 
 interface DashboardSidebarProps {
   defaultCollapsed?: boolean;
@@ -54,12 +50,20 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   };
 
   const isItemActive = (item: SidebarItem): boolean => {
+    // Exact match for root path
     if (item.href === "/" && pathname === "/") return true;
-    if (item.href !== "/" && pathname.startsWith(item.href)) return true;
-    return (
-      item.subItems?.some((subItem) => pathname.startsWith(subItem.href)) ||
-      false
-    );
+
+    // For items with subItems, only activate if one of the subItems is active
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.some((subItem) => pathname === subItem.href);
+    }
+
+    // For regular items (without subItems), check exact match or if it's a parent path
+    if (item.href !== "/") {
+      return pathname === item.href || pathname.startsWith(item.href + "/");
+    }
+
+    return false;
   };
 
   const SidebarItemComponent = ({
@@ -126,7 +130,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
     if (isCollapsed) {
       return (
-       <SidebarTooltip item={item} key={item.id} ItemContent={ItemContent}/>
+        <SidebarTooltip item={item} key={item.id} ItemContent={ItemContent} />
       );
     }
 

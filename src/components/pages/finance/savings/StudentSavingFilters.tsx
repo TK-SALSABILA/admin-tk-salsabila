@@ -1,12 +1,14 @@
+"use client";
+
+import ModalSavingForm from "@/components/form/ModalSavingForm";
 import {
   FilterConfig,
   ReusableFilter,
 } from "@/components/shared/ReusableFilter";
-import { Button } from "@/components/ui/button";
-import { Plus, PlusSquareIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 const StudentSavingFilters = () => {
+  const [open, setOpen] = useState<boolean>(false);
   const schoolYear: FilterConfig[] = [
     {
       type: "select",
@@ -61,15 +63,7 @@ const StudentSavingFilters = () => {
         <ReusableFilter filters={classs} key={classs[0].key} actions={null} />
       </div>
       <div className="">
-        <ReusableFilter
-          filters={[]}
-          searchConfig={{ placeholder: "Cari", searchKey: "search" }}
-          actions={
-            <Button>
-              <PlusSquareIcon /> Tambah Tabungan
-            </Button>
-          }
-        />
+        <ModalSavingForm open={open} setOpen={setOpen} />
       </div>
     </div>
   );
