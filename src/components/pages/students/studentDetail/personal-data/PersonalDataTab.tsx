@@ -21,63 +21,63 @@ const PersonalDataTab = ({ personal, loading }: PersonalDataProps) => {
     setCopied(true);
   };
 
-  if (loading) return <TabLoader/>
+  if (loading) return <TabLoader />;
 
   return (
     <section>
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Data Pribadi</CardTitle>
-          <p className="text-sm text-muted-foreground">Data pribadi siswa</p>
+          <CardTitle className='text-lg font-semibold'>Data Pribadi</CardTitle>
+          <p className='text-sm text-muted-foreground'>Data pribadi siswa</p>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm">
+        <CardContent className='space-y-4 text-sm'>
           {/* Data Pribadi */}
-          <DataItem label="Nama Lengkap" value={personal.fullName} />
-          <DataItem label="Nama Panggilan" value={personal.nickName} />
+          <DataItem label='Nama Lengkap' value={personal.fullName} />
+          <DataItem label='Nama Panggilan' value={personal.nickName} />
           <DataItem
-            label="NIK"
+            label='NIK'
             value={personal.nik}
             copyable
             onCopy={() => handleCopyNik(personal.nik)}
             copied={copied}
           />
-          <DataItem label="Jenis Kelamin" value={personal.gender} />
+          <DataItem label='Jenis Kelamin' value={personal.gender} />
           <DataItem
-            label="Tanggal Lahir"
+            label='Tanggal Lahir'
             value={new Date(personal.dateBirth).toLocaleDateString("id-ID", {
               year: "numeric",
               month: "long",
               day: "numeric",
             })}
           />
-          <DataItem label="Anak ke-" value={personal.birthOrder} />
-          <DataItem label="Suku" value={personal.tribe} />
-          <DataItem label="Alamat" value={personal.address} />
-          <DataItem label="Tinggi Badan (cm)" value={personal.height} />
-          <DataItem label="Berat Badan (kg)" value={personal.weight} />
+          <DataItem label='Anak ke-' value={personal.birthOrder} />
+          <DataItem label='Suku' value={personal.tribe} />
+          <DataItem label='Alamat' value={personal.address} />
+          <DataItem label='Tinggi Badan (cm)' value={personal.height} />
+          <DataItem label='Berat Badan (kg)' value={personal.weight} />
 
           {/* Divider */}
-          <div className="border-t border-gray-200 my-6" />
+          <div className='border-t border-gray-200 my-6' />
 
           {/* Data Akademik */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <div className='mb-4'>
+            <h3 className='text-lg font-semibold text-gray-900'>
               Data Akademik
             </h3>
-            <p className="text-sm text-muted-foreground">Data akademik siswa</p>
+            <p className='text-sm text-muted-foreground'>Data akademik siswa</p>
           </div>
 
           <DataItem
-            label="Tahun Ajaran"
-            value={personal.gradeClass.academicYear}
+            label='Tahun Ajaran'
+            value={personal?.gradeClass?.academicYear}
           />
           <DataItem
-            label="Tingkat Kelas"
-            value={personal.gradeClass.gradeLog.gradeLevel}
+            label='Tingkat Kelas'
+            value={personal?.gradeClass?.gradeLog?.gradeLevel}
           />
           <DataItem
-            label="Status Aktif"
-            value={personal.gradeClass.isCurrent ? "Aktif" : "Tidak Aktif"}
+            label='Status Aktif'
+            value={personal?.gradeClass?.isCurrent ? "Aktif" : "Tidak Aktif"}
           />
         </CardContent>
       </Card>
@@ -101,19 +101,19 @@ const DataItem = ({
   onCopy,
   copied,
 }: DataItemProps) => (
-  <div className="flex">
-    <div className="w-40 flex-shrink-0">
-      <p className="font-bold text-slate-900">{label}</p>
+  <div className='flex'>
+    <div className='w-40 flex-shrink-0'>
+      <p className='font-bold text-slate-900'>{label}</p>
     </div>
-    <div className="flex-1">
-      <p className="text-gray-900 flex items-center gap-2">
+    <div className='flex-1'>
+      <p className='text-gray-900 flex items-center gap-2'>
         {value}{" "}
         {copyable && onCopy && (
-          <span className="cursor-pointer" onClick={onCopy}>
+          <span className='cursor-pointer' onClick={onCopy}>
             {copied ? (
-              <CopyCheck className="h-4 w-4 mt-[1px] text-muted-foreground" />
+              <CopyCheck className='h-4 w-4 mt-[1px] text-muted-foreground' />
             ) : (
-              <Copy className="h-4 w-4 mt-[1px] text-muted-foreground" />
+              <Copy className='h-4 w-4 mt-[1px] text-muted-foreground' />
             )}
           </span>
         )}
