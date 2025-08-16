@@ -2,7 +2,7 @@ export enum valueType {
   UJIAN_SEMESTER = "Ujian Semester",
   UJIAN_HARIAN = "Ujian Harian",
   NILAI_PRAKTEK = "Nilai Praktek",
-  REMEDIAL = "Remedial"
+  REMEDIAL = "Remedial",
 }
 
 export interface Student {
@@ -11,31 +11,30 @@ export interface Student {
   nickName: string;
   nik: string;
   gender: "Laki-laki" | "Perempuan";
-  dateBirth: string; 
-  birthOrder: string; 
+  dateBirth: string;
+  birthOrder: string;
   tribe: string;
   address: string;
   height: string;
-  weight: string; 
+  weight: string;
   gradeClass: {
     academicYear: string;
     isCurrent: boolean;
     gradeLog: {
       id: string;
-      gradeLevel: string; 
+      gradeLevel: string;
     };
   };
 }
-
 
 export interface Parent {
   id: string | null;
 
   // Ayah
   fatherName: string;
-  fatherDateBirth: string; 
+  fatherDateBirth: string;
   fatherNik: string;
-  fatherEducation: string; 
+  fatherEducation: string;
   fatherJob: string;
   fatherCitizen: string; // contoh: "WNI" | "WNA"
   fatherIncome: number;
