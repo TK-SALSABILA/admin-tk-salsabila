@@ -1,50 +1,91 @@
-"use client";
-
-import React, { useState } from "react";
+import tuitionSchema, {
+  generateReferenceNumber,
+  PaymentStatus,
+  PaymentType,
+  TransactionType,
+  TransactionTypeEnum,
+  TuitionSchemaForm,
+} from "@/schema/tuitionSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import ReusableModal from "../shared/ReusableModal";
 import ButtonOpenModal from "../shared/ButtonOpenModal";
 import StudentSearchSelect from "./StudentSearchSelect";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import savingSchema, { SavingSchemaForm } from "@/schema/savingSchema";
-import { Student } from "@/types/student";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { NumericFormat } from "react-number-format";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
-import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
-import { NumericFormat } from "react-number-format";
-import { useCreateSavingMutation } from "@/hooks/mutation/useSavingMutation";
-import { Textarea } from "../ui/textarea";
+import { Student } from "@/types/student";
+import { TuitionRecord } from "@/types/tuition";
 
-interface ModalSavingFormProps {
+const useCreateTuitionMutation = () => ({
+  mutateAsync: async (data: any) => {
+    console.log("Creating tuition payment:", data);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return { success: true };
+  },
+  isPending: false,
+});
+
+const useUpdateTuitionMutation = () => ({
+  mutateAsync: async (data: any) => {
+    console.log("Updating tuition payment:", data);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return { success: true };
+  },
+  isPending: false,
+});
+
+// Helper function for formatting currency
+const formatRupiah = (amount: number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(amount);
+};
+
+interface ModalTuitionFormProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onSuccess?: () => void;
+  editData?: TuitionSchemaForm | null; // Data untuk edit mode
+  mode?: "create" | "edit"; // Mode form
 }
 
-const ModalSavingForm = ({
+const ModalTuitionForm = ({
   open,
   setOpen,
   onSuccess,
-}: ModalSavingFormProps) => {
-  const { mutateAsync, isPending } = useCreateSavingMutation();
+  editData = null,
+  mode = "create",
+}: ModalTuitionFormProps) => {
+  const { mutateAsync: createMutation, isPending: isCreating } =
+    useCreateTuitionMutation();
+  const { mutateAsync: updateMutation, isPending: isUpdating } =
+    useUpdateTuitionMutation();
+
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
 
-  const form = useForm<SavingSchemaForm>({
-    resolver: zodResolver(savingSchema),
+  const isEditMode = mode === "edit" && editData;
+  const isPending = isCreating || isUpdating;
+
+  const form = useForm({
+    resolver: zodResolver(tuitionSchema),
     defaultValues: {
       studentId: "",
-      paymentType: "Tabungan",
-      transactionType: "Uang Masuk",
+      paymentType: PaymentType.ADMISSION_FEE,
+      transactionType: TransactionType.TUITION,
       amount: 0,
-      description: "",
+      month: new Date().toISOString().slice(0, 7),
       transactionDate: new Date().toISOString(),
     },
   });
@@ -55,10 +96,47 @@ const ModalSavingForm = ({
     watch,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = form;
+
+  // Effect untuk mengisi form dengan data edit
+  useEffect(() => {
+    if (isEditMode && editData && open) {
+      console.log("Setting edit data:", editData);
+
+      // Set form values
+      setValue("studentId", editData.studentId || "");
+      setValue("paymentType", editData.paymentType || PaymentType.FUND_TRANSFER);
+      setValue(
+        "transactionType",
+        editData.transactionType || TransactionType.TUITION
+      );
+      setValue("amount", editData.amount || 0);
+      setValue("month", editData.month || new Date().toISOString().slice(0, 7));
+      setValue(
+        "transactionDate",
+        editData.transactionDate || new Date().toISOString()
+      );
+      // Set selected student jika ada data student
+      if (editData.student) {
+        setSelectedStudent(editData.student);
+      }
+    }
+  }, [isEditMode, editData, open, setValue]);
+
+  // Reset form ketika modal ditutup atau mode berubah
+  useEffect(() => {
+    if (!open) {
+      reset();
+      setSelectedStudent(null);
+      setReviewMode(false);
+    }
+  }, [open, reset]);
+
   const transactionDate = watch("transactionDate");
   const amount = watch("amount");
+  const paymentType = watch("paymentType");
   const transactionType = watch("transactionType");
 
   const handleSelectStudent = (student: Student) => {
@@ -70,7 +148,7 @@ const ModalSavingForm = ({
   // Form submission untuk review
   const onFormSubmit = handleSubmit((data) => {
     console.log("Form data:", data);
-    if (!selectedStudent) {
+    if (!selectedStudent && !isEditMode) {
       console.error("No student selected");
       return;
     }
@@ -79,22 +157,32 @@ const ModalSavingForm = ({
 
   // Final submission
   const onFinalSubmit = async () => {
-    const formData = form.getValues();
+    const formData = getValues();
 
-    console.log("Final submission data:", {
+    const submitData = {
       ...formData,
       transactionDate: formatDateForBackend(formData.transactionDate),
-    });
+    };
+
+    console.log("Final submission data:", submitData);
 
     try {
-      await mutateAsync({
-        ...formData,
-        transactionDate: formatDateForBackend(formData.transactionDate),
-      });
+      if (isEditMode) {
+        // Update existing record
+        await updateMutation({
+          id: editData?.id,
+          ...submitData,
+        });
+      } else {
+        // Create new record
+        await createMutation(submitData);
+      }
+
       reset();
       setSelectedStudent(null);
       setReviewMode(false);
       setOpen(false);
+
       if (onSuccess) {
         onSuccess();
       }
@@ -103,7 +191,7 @@ const ModalSavingForm = ({
     }
   };
 
-  const formatDateForBackend = (dateString: string): string => {
+  const formatDateForBackend = (dateString: string) => {
     if (!dateString) return "";
 
     const date = new Date(dateString);
@@ -131,8 +219,30 @@ const ModalSavingForm = ({
     reset();
   };
 
-  const handleOpenModal = () => {
-    setOpen(true);
+  const handleGenerateNewReference = () => {
+    const newRef = generateReferenceNumber();
+    setValue("referenceNumber", newRef);
+  };
+
+  // Get modal titles based on mode
+  const getModalTitle = () => {
+    if (reviewMode) {
+      return isEditMode
+        ? "Konfirmasi Perubahan Pembayaran SPP"
+        : "Konfirmasi Pembayaran SPP";
+    }
+    return isEditMode ? "Edit Pembayaran SPP" : "Input Pembayaran SPP";
+  };
+
+  const getModalDescription = () => {
+    if (reviewMode) {
+      return isEditMode
+        ? "Cek kembali perubahan pembayaran yang telah dimasukan"
+        : "Cek kembali detail pembayaran yang telah dimasukan";
+    }
+    return isEditMode
+      ? "Update detail pembayaran SPP siswa"
+      : "Masukan detail pembayaran SPP siswa";
   };
 
   return (
@@ -140,30 +250,28 @@ const ModalSavingForm = ({
       open={open}
       className="min-w-[750px]"
       onOpenChange={setOpen}
-      title={
-        reviewMode
-          ? "Input Pembayaran Tabungan"
-          : "Input Pembayaran Tabungan"
-      }
-      description={
-        reviewMode
-          ? "Cek kembali detail pembayaran yang telah dimasukan"
-          : "Masukan detail pembayaran tabungan"
-      }
+      title={getModalTitle()}
+      description={getModalDescription()}
       trigger={
-        <ButtonOpenModal
-          text="Input Pembayaran Tabungan"
-          onClick={handleOpenModal}
-        />
+        !isEditMode ? (
+          <ButtonOpenModal
+            text="Input Pembayaran SPP"
+            onClick={() => setOpen(true)}
+          />
+        ) : undefined
       }
     >
       <FormProvider {...form}>
         {!reviewMode ? (
-          <form onSubmit={onFormSubmit} className="space-y-6">
+          <div className="space-y-6">
             {/* Student Selection Row */}
             <div className="grid grid-cols-12 gap-4 items-end">
               <div className="col-span-6">
-                <StudentSearchSelect onSelect={handleSelectStudent} />
+                <StudentSearchSelect
+                  onSelect={handleSelectStudent}
+                  selectedStudent={selectedStudent}
+                  disabled={isEditMode} // Disable di edit mode
+                />
                 {errors.studentId && (
                   <p className="text-red-500 text-xs mt-1">
                     Siswa harus dipilih
@@ -176,7 +284,7 @@ const ModalSavingForm = ({
                   disabled
                   value={selectedStudent ? "TK B" : ""}
                   placeholder="-"
-                  className="bg-gray-50"
+                  className="bg-gray-50 mt-2"
                 />
               </div>
               <div className="col-span-3">
@@ -185,7 +293,7 @@ const ModalSavingForm = ({
                   disabled
                   value={selectedStudent?.nik || ""}
                   placeholder="-"
-                  className="bg-gray-50"
+                  className="bg-gray-50 mt-2"
                 />
               </div>
             </div>
@@ -197,39 +305,55 @@ const ModalSavingForm = ({
                   Jenis Transaksi
                 </Label>
                 <RadioGroup
-                  defaultValue="Uang Masuk"
-                  onValueChange={(val) => {
+                  value={transactionType}
+                  onValueChange={(val: TransactionTypeEnum) => {
                     console.log("Transaction type changed:", val);
                     setValue("transactionType", val);
                   }}
                   className="space-y-2"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Uang Masuk" id="uang-masuk" />
-                    <Label htmlFor="uang-masuk" className="font-normal">
+                    <RadioGroupItem
+                      value={PaymentType.ADMISSION_FEE}
+                      id="admission-fee"
+                    />
+                    <Label htmlFor="admission-fee" className="font-normal">
                       Uang Masuk
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Pindah Dana" id="pindah-dana" />
-                    <Label htmlFor="pindah-dana" className="font-normal">
+                    <RadioGroupItem
+                      value={PaymentType.FUND_TRANSFER}
+                      id="fund-transfer"
+                    />
+                    <Label htmlFor="fund-transfer" className="font-normal">
                       Pindah Dana
                     </Label>
                   </div>
                 </RadioGroup>
               </div>
-
-              <div>
-                <Label className="text-sm font-medium">Jenis Pembayaran</Label>
-                <Input disabled value="Tabungan" className="bg-gray-50 mt-2" />
-              </div>
             </div>
 
-            {/* Amount and Date Row */}
+            {/* Amount and Month Row */}
             <div className="grid grid-cols-2 gap-6">
+              <div>
+                <Label className="text-sm font-medium">Jenis Pembayaran</Label>
+                <select
+                  value={paymentType}
+                  onChange={(e: any) => setValue("paymentType", e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mt-2"
+                >
+                  {Object.entries(PaymentType).map(([key, value]) => (
+                    <option key={key} value={value}>
+                      {value.replace("_", " ")}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div>
                 <Label className="text-sm font-medium">Jumlah Pembayaran</Label>
                 <NumericFormat
+                  value={amount}
                   thousandSeparator="."
                   decimalSeparator=","
                   prefix="Rp "
@@ -249,6 +373,15 @@ const ModalSavingForm = ({
               </div>
 
               <div>
+                <Label className="text-sm font-medium">Bulan SPP</Label>
+                <Input
+                  type="month"
+                  value={watch("month")}
+                  onChange={(e) => setValue("month", e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+              <div>
                 <Label className="text-sm font-medium">
                   Tanggal Pembayaran
                 </Label>
@@ -256,10 +389,7 @@ const ModalSavingForm = ({
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal mt-2",
-                        !transactionDate && "text-muted-foreground"
-                      )}
+                      className="w-full justify-start text-left font-normal mt-2"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {transactionDate
@@ -285,29 +415,15 @@ const ModalSavingForm = ({
                 </Popover>
               </div>
             </div>
-
-            {/* Description */}
-            <div>
-              <Label className="text-sm font-medium">Perihal</Label>
-              <Textarea
-                {...register("description")}
-                placeholder="Masukkan deskripsi pembayaran"
-                className="mt-2"
-              />
-            </div>
-
+            {/* Status */}
             {/* Action Buttons */}
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={handleModalClose}
-              >
+              <Button variant="outline" onClick={handleModalClose}>
                 Batal
               </Button>
-              <Button type="submit">Selanjutnya</Button>
+              <Button onClick={onFormSubmit}>Selanjutnya</Button>
             </div>
-          </form>
+          </div>
         ) : (
           /* Review Mode */
           <div className="space-y-6">
@@ -317,7 +433,7 @@ const ModalSavingForm = ({
                   Nama Siswa
                 </Label>
                 <div className="mt-1 text-sm">
-                  {selectedStudent?.fullName || "Wawan Irawan"}
+                  {selectedStudent?.fullName || editData?.student?.name || "-"}
                 </div>
               </div>
               <div>
@@ -331,7 +447,7 @@ const ModalSavingForm = ({
                   NIS
                 </Label>
                 <div className="mt-1 text-sm">
-                  {selectedStudent?.nik || "90"}
+                  {selectedStudent?.nik || editData?.student?.nik || "-"}
                 </div>
               </div>
               <div>
@@ -341,7 +457,9 @@ const ModalSavingForm = ({
                 <div className="mt-1">
                   <Button
                     variant={
-                      transactionType === "Uang Masuk" ? "default" : "secondary"
+                      transactionType === TransactionType.TUITION
+                        ? "default"
+                        : "secondary"
                     }
                     size="sm"
                     className="h-7 text-xs"
@@ -356,7 +474,7 @@ const ModalSavingForm = ({
                 </Label>
                 <div className="mt-1">
                   <Button variant="outline" size="sm" className="h-7 text-xs">
-                    Tabungan
+                    {paymentType.replace("_", " ")}
                   </Button>
                 </div>
               </div>
@@ -365,8 +483,14 @@ const ModalSavingForm = ({
                   Jumlah Pembayaran
                 </Label>
                 <div className="mt-1 text-sm font-medium">
-                  Rp{amount?.toLocaleString("id-ID") || "0"},00
+                  {formatRupiah(amount || 0)}
                 </div>
+              </div>
+              <div>
+                <Label className="text-sm font-semibold text-gray-700">
+                  Bulan SPP
+                </Label>
+                <div className="mt-1 text-sm">{watch("month")}</div>
               </div>
               <div>
                 <Label className="text-sm font-semibold text-gray-700">
@@ -378,14 +502,6 @@ const ModalSavingForm = ({
                   })}
                 </div>
               </div>
-              <div>
-                <Label className="text-sm font-semibold text-gray-700">
-                  Perihal
-                </Label>
-                <div className="mt-1 text-sm">
-                  {form.getValues("description") || "-"}
-                </div>
-              </div>
             </div>
 
             {/* Action Buttons */}
@@ -393,7 +509,15 @@ const ModalSavingForm = ({
               <Button variant="outline" onClick={onBack}>
                 Kembali
               </Button>
-              <Button onClick={onFinalSubmit}>Simpan</Button>
+              <Button onClick={onFinalSubmit} disabled={isPending}>
+                {isPending
+                  ? isEditMode
+                    ? "Mengupdate..."
+                    : "Menyimpan..."
+                  : isEditMode
+                  ? "Update"
+                  : "Simpan"}
+              </Button>
             </div>
           </div>
         )}
@@ -402,4 +526,4 @@ const ModalSavingForm = ({
   );
 };
 
-export default ModalSavingForm;
+export default ModalTuitionForm;

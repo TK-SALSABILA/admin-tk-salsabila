@@ -1,5 +1,7 @@
 import { Parent, Student } from "@/types/student";
 
+
+
 export interface PaginationParams {
   page: number;
   rpp: number;

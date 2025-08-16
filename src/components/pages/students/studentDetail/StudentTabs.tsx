@@ -18,32 +18,34 @@ const StudentTabs = ({ id }: { id: string }) => {
   const { data: parent, isLoading: parentLoading } =
     useGetParentStudentByStudentIdQuery(id);
   return (
-    <Tabs defaultValue="personal-data" className="w-full">
-      <div className="flex justify-between w-full">
-        <TabsList>
-          <TabsTrigger value="personal-data">Data Pribadi</TabsTrigger>
-          <TabsTrigger value="parent-data">Data Orang Tua</TabsTrigger>
-          <TabsTrigger value="absensi">Absensi</TabsTrigger>
-          <TabsTrigger value="raport">Raport</TabsTrigger>
-          <Button>Edit Data</Button>
-        </TabsList>
-      </div>
-      <TabsContent value="personal-data">
-        <PersonalDataTab
-          loading={personalLoading}
-          personal={student?.data as any}
-        />
-      </TabsContent>
-      <TabsContent value="parent-data">
-        <ParentDataTab data={parent?.data as any} loading={parentLoading} />
-      </TabsContent>
-      <TabsContent value="absensi">
-        <StudentAbsenceTabs />
-      </TabsContent>
-      <TabsContent value="raport">
-        <StudentRaportTab />
-      </TabsContent>
-    </Tabs>
+    <div className="flex justify-between w-full">
+      <Tabs defaultValue="personal-data" className="w-full">
+        <div className="flex justify-between w-full">
+          <TabsList>
+            <TabsTrigger value="personal-data">Data Pribadi</TabsTrigger>
+            <TabsTrigger value="parent-data">Data Orang Tua</TabsTrigger>
+            <TabsTrigger value="absensi">Absensi</TabsTrigger>
+            <TabsTrigger value="raport">Raport</TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent value="personal-data">
+          <PersonalDataTab
+            loading={personalLoading}
+            personal={student?.data as any}
+          />
+        </TabsContent>
+        <TabsContent value="parent-data">
+          <ParentDataTab data={parent?.data as any} loading={parentLoading} />
+        </TabsContent>
+        <TabsContent value="absensi">
+          <StudentAbsenceTabs />
+        </TabsContent>
+        <TabsContent value="raport">
+          <StudentRaportTab />
+        </TabsContent>
+      </Tabs>
+      <Button>Edit Data</Button>
+    </div>
   );
 };
 
