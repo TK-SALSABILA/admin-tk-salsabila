@@ -1,4 +1,4 @@
-import { CombinedStudentFormData } from "@/schema/studentSchema";
+import { CombinedStudentFormData, ParentFormData, StudentFormData } from "@/schema/studentSchema";
 import apiClient from "../axios";
 import {
   GetAllApiResponse,
@@ -44,6 +44,22 @@ export const studentService = {
   createStudent: async (data: CombinedStudentFormData) => {
     try {
       const response = await apiClient.post("/student/create", data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateStudent: async (id: string, data: StudentFormData) => {
+    try {
+      const response = await apiClient.patch(`/student/${id}`, data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateParrent: async (id: string, data: ParentFormData) => {
+    try {
+      const response = await apiClient.patch(`/parent/${id}`, data);
       return response.data;
     } catch (error) {
       throw error;

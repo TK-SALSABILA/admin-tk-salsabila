@@ -53,40 +53,33 @@ const GradeSelect: React.FC<GradeSelectProps> = ({
   };
 
   const handleValueChange = (selectedValue: string) => {
-    const selectedGrade = grades.find((grade) =>
-      withLevel
-        ? grade.gradeLevel === selectedValue
-        : grade.id === selectedValue
-    );
-
-    if (!selectedGrade) return;
-
-    if (withLevel) {
+    const selectedGrade = grades.find((grade) => grade.id === selectedValue);
+    if (selectedGrade) {
       onChange(selectedGrade.id, selectedGrade.gradeLevel);
-    } else {
-      onChange(selectedGrade.id);
     }
   };
 
-  // Untuk menentukan value yang akan di-set ke Select
-  const selectValue = withLevel
-    ? grades.find((grade) => grade.gradeLevel === value)?.gradeLevel || value
-    : value;
+  // Temukan grade yang sesuai dengan value (id)
+  const selectedGrade = grades.find((grade) => grade.id === value);
 
   return (
-    <Select value={selectValue} onValueChange={handleValueChange}>
+    <Select
+      value={value}
+      onValueChange={handleValueChange}
+      disabled={isLoading}
+    >
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Pilih Kelas" />
+        <SelectValue placeholder="Pilih Kelas">
+          {selectedGrade ? selectedGrade.gradeLevel : ""}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent ref={contentRef} onScroll={handleScroll}>
         {grades.map((grade) => (
-          <SelectItem
-            key={grade.id}
-            value={withLevel ? grade.gradeLevel : grade.id}
-          >
+          <SelectItem key={grade.id} value={grade.id}>
             {grade.gradeLevel}
           </SelectItem>
         ))}
+        {isLoading && <div className="p-2 text-center">Memuat...</div>}
       </SelectContent>
     </Select>
   );
