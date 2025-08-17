@@ -1,5 +1,6 @@
 "use client";
 
+import GradeSelect from "@/components/form/GradeSelect";
 import ModalSavingForm from "@/components/form/ModalSavingForm";
 import {
   FilterConfig,
@@ -48,12 +49,9 @@ const StudentTuitionFilters = () => {
   return (
     <div className="flex justify-start gap-20">
       <div className="flex flex-row items-start gap-2">
-        <ReusableFilter filters={classs} key={classs[0].key} actions={null} />
+        <GradeSelect onChange={() => {}} value="" withLevel />
         <ReusableFilter filters={month} key={month[0].key} actions={null} />
         <ReusableFilter filters={status} key={status[0].key} actions={null} />
-      </div>
-      <div className="">
-        <ModalSavingForm open={open} setOpen={setOpen} />
       </div>
     </div>
   );
