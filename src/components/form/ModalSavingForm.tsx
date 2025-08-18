@@ -41,8 +41,8 @@ const ModalSavingForm = ({
     resolver: zodResolver(savingSchema),
     defaultValues: {
       studentId: "",
-      paymentType: "Tabungan",
-      transactionType: "Uang Masuk",
+      paymentType: "Saving",
+      transactionType: "ADMISSION_FEE",
       amount: 0,
       description: "",
       transactionDate: new Date().toISOString(),
@@ -141,9 +141,7 @@ const ModalSavingForm = ({
       className="min-w-[750px]"
       onOpenChange={setOpen}
       title={
-        reviewMode
-          ? "Input Pembayaran Tabungan"
-          : "Input Pembayaran Tabungan"
+        reviewMode ? "Input Pembayaran Tabungan" : "Input Pembayaran Tabungan"
       }
       description={
         reviewMode
@@ -197,7 +195,7 @@ const ModalSavingForm = ({
                   Jenis Transaksi
                 </Label>
                 <RadioGroup
-                  defaultValue="Uang Masuk"
+                  defaultValue="ADMISSION_FEE"
                   onValueChange={(val) => {
                     console.log("Transaction type changed:", val);
                     setValue("transactionType", val);
@@ -205,13 +203,13 @@ const ModalSavingForm = ({
                   className="space-y-2"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Uang Masuk" id="uang-masuk" />
+                    <RadioGroupItem value="ADMISSION_FEE" id="uang-masuk" />
                     <Label htmlFor="uang-masuk" className="font-normal">
                       Uang Masuk
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Pindah Dana" id="pindah-dana" />
+                    <RadioGroupItem value="FUND_TRANSFER" id="pindah-dana" />
                     <Label htmlFor="pindah-dana" className="font-normal">
                       Pindah Dana
                     </Label>

@@ -3,15 +3,17 @@ export interface SavingGetData {
   studentId: string;
   studentName: string;
   paymentType: string;
-  totalAmmount: number;
+  totalAmount: number;
   transactionDate: string;
   description: string;
+  previousBalance: number;
+  currentBalance: number;
 }
 export interface SavingResponse {
   meta: {
     page: number;
     recordsPerPage: number;
-    totalRecord: number;
+    totalRecords: number;
     totalPages: number;
     version: number;
     duration: number;
