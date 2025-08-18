@@ -11,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import ReusableModal from "../shared/ReusableModal";
-import ButtonOpenModal from "../shared/ButtonOpenModal";
 import StudentSearchSelect from "./StudentSearchSelect";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -24,16 +23,10 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Calendar } from "../ui/calendar";
 import { Student } from "@/types/student";
-import { useUpdateTuitionMutation } from "@/hooks/mutation/useTutionMutation";
-
-const useCreateTuitionMutation = () => ({
-  mutateAsync: async (data: any) => {
-    console.log("Creating tuition payment:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return { success: true };
-  },
-  isPending: false,
-});
+import {
+  useCreateTuitionMutation,
+  useUpdateTuitionMutation,
+} from "@/hooks/mutation/useTutionMutation";
 
 // Helper function for formatting currency
 const formatRupiah = (amount: number) => {
@@ -61,14 +54,11 @@ const ModalTuitionForm = ({
 }: ModalTuitionFormProps) => {
   const { mutateAsync: createMutation, isPending: isCreating } =
     useCreateTuitionMutation();
-  const { mutateAsync: updateMutation, isPending: isUpdating } =
-    useUpdateTuitionMutation();
-
   const [selectedStudent, setSelectedStudent] = useState<any | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
 
   const isEditMode = mode === "edit" && editData;
-  const isPending = isCreating || isUpdating;
+  const isPending = isCreating;
   console.log("edit data", editData);
 
   const form = useForm({
@@ -161,17 +151,7 @@ const ModalTuitionForm = ({
     };
 
     try {
-      if (isEditMode) {
-        // Update existing record
-        await updateMutation({
-          id: editData?.id,
-          data: submitData,
-        });
-      } else {
-        // Create new record
-        await createMutation(submitData);
-      }
-
+      await createMutation(submitData);
       reset();
       setSelectedStudent(null);
       setReviewMode(false);
@@ -241,14 +221,7 @@ const ModalTuitionForm = ({
       onOpenChange={setOpen}
       title={getModalTitle()}
       description={getModalDescription()}
-      trigger={
-        !isEditMode ? (
-          <ButtonOpenModal
-            text="Input Pembayaran SPP"
-            onClick={() => setOpen(true)}
-          />
-        ) : undefined
-      }
+      trigger={undefined}
     >
       <FormProvider {...form}>
         {!reviewMode ? (
@@ -287,77 +260,34 @@ const ModalTuitionForm = ({
               </div>
             </div>
 
-            {/* Transaction Type and Payment Type Row */}
+            {/* Amount and Month Row */}
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <Label className="text-sm font-medium mb-3 block">
                   Jenis Transaksi
                 </Label>
                 <RadioGroup
-                  value={transactionType}
-                  onValueChange={(val: TransactionTypeEnum) => {
-                    console.log("Transaction type changed:", val);
-                    setValue("transactionType", val as any);
-                  }}
-                  className="space-y-2"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value={TransactionType.TUITION}
-                      id="tuition"
-                    />
-                    <Label htmlFor="tuition" className="font-normal">
-                      SPP
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value={TransactionType.SAVINGS}
-                      id="savings"
-                    />
-                    <Label htmlFor="savings" className="font-normal">
-                      Tabungan
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium mb-3 block">
-                  Jenis Pembayaran
-                </Label>
-                <RadioGroup
-                  value={paymentType}
+                  defaultValue="ADMISSION_FEE"
                   onValueChange={(val: PaymentTypeEnum) => {
-                    console.log("Payment type changed:", val);
-                    setValue("paymentType", val as any);
+                    console.log("Transaction type changed:", val);
+                    setValue("paymentType", val);
                   }}
-                  className="space-y-2"
+                  className="flex items-center"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value={PaymentType.ADMISSION_FEE}
-                      id="admission-fee"
-                    />
-                    <Label htmlFor="admission-fee" className="font-normal">
+                    <RadioGroupItem value="ADMISSION_FEE" id="uang-masuk" />
+                    <Label htmlFor="uang-masuk" className="font-normal">
                       Uang Masuk
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value={PaymentType.FUND_TRANSFER}
-                      id="fund-transfer"
-                    />
-                    <Label htmlFor="fund-transfer" className="font-normal">
+                    <RadioGroupItem value="FUND_TRANSFER" id="pindah-dana" />
+                    <Label htmlFor="pindah-dana" className="font-normal">
                       Pindah Dana
                     </Label>
                   </div>
                 </RadioGroup>
               </div>
-            </div>
-
-            {/* Amount and Month Row */}
-            <div className="grid grid-cols-2 gap-6">
               <div>
                 <Label className="text-sm font-medium">Jumlah Pembayaran</Label>
                 <NumericFormat
@@ -473,7 +403,7 @@ const ModalTuitionForm = ({
                     size="sm"
                     className="h-7 text-xs"
                   >
-                    {transactionType}
+                    {transactionType == "SAVINGS" ? "Tabungan" : "SPP"}
                   </Button>
                 </div>
               </div>
@@ -483,7 +413,7 @@ const ModalTuitionForm = ({
                 </Label>
                 <div className="mt-1">
                   <Button variant="outline" size="sm" className="h-7 text-xs">
-                    {paymentType}
+                    {paymentType == "ADMISSION_FEE" ? "Uang Masuk" : "Pindah Dana"}
                   </Button>
                 </div>
               </div>

@@ -3,8 +3,9 @@
 import { ReactNode } from "react";
 import { SearchInput } from "./SearchInput";
 import { FilterSelect } from "./FilterSelect";
+import GradeFilterSelect from "./GradeFilterSelect";
 
-type FilterType = "search" | "select";
+type FilterType = "search" | "select" | "grade";
 
 export interface FilterConfig {
   type: FilterType;
@@ -41,17 +42,30 @@ export function ReusableFilter({
     >
       {/* Left side - Filters */}
       <div className="flex flex-wrap gap-2 w-full md:w-auto">
-        {filters.map((filter) =>
-          filter.type === "select" ? (
-            <FilterSelect
-              key={filter.key}
-              options={filter.options || []}
-              placeholder={filter.placeholder}
-              searchKey={filter.key}
-              width={filter.width}
-            />
-          ) : null
-        )}
+        {filters.map((filter) => {
+          if (filter.type === "select") {
+            return (
+              <FilterSelect
+                key={filter.key}
+                options={filter.options || []}
+                placeholder={filter.placeholder}
+                searchKey={filter.key}
+                width={filter.width}
+              />
+            );
+          }
+          if (filter.type === "grade") {
+            return (
+              <GradeFilterSelect
+                key={filter.key}
+                placeholder={filter.placeholder}
+                searchKey={filter.key}
+                width={filter.width}
+              />
+            );
+          }
+          return null;
+        })}
       </div>
 
       {/* Right side - Search and Actions */}

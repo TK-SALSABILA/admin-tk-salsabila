@@ -3,6 +3,7 @@ export interface ClassData {
   gradeLevel: string;
 }
 
+
 export interface GetAllGradesApiResponse {
   meta: {
     page: number;

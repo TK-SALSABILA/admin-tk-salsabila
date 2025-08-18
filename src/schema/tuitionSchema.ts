@@ -2,13 +2,13 @@ import { z } from "zod";
 
 // Enum definitions for better type safety
 export const PaymentType = {
-  ADMISSION_FEE: "Uang Masuk",
-  FUND_TRANSFER: "Pindah Dana",
+  ADMISSION_FEE: "ADMISSION_FEE",
+  FUND_TRANSFER: "FUND_TRANSFER",
 } as const;
 
 export const TransactionType = {
-  TUITION: "SPP",
-  SAVINGS: "Tabungan",
+  TUITION: "TUITION",
+  SAVINGS: "SAVINGS",
 } as const;
 
 export const PaymentStatus = {

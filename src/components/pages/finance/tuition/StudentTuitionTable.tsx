@@ -9,15 +9,14 @@ import {
 import DataTable from "@/components/shared/DataTable";
 import ModalTuitionForm from "@/components/form/ModalTuitionForm";
 import { TuitionSchemaForm } from "@/schema/tuitionSchema";
-import {
-  generateInvoiceNumber,
-  generateInvoicePDF,
-  getCurrentDate,
-} from "@/lib/generateInvoice";
+
+import { useGradeStore } from "@/stores/grade-store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { generateSPPInvoiceNumber, generateSPPInvoicePDF, getCurrentDateID } from "@/lib/generateInvoice";
 
 interface StudentTuitionTableProps {
   data: TuitionSchemaForm[];
-  onDataChange?: () => void; // Callback untuk refresh data setelah edit
+  onDataChange?: () => void;
 }
 
 export const StudentTuitionTable = ({
@@ -27,32 +26,31 @@ export const StudentTuitionTable = ({
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] =
     useState<TuitionSchemaForm | null>(null);
+  const { selectedGrade } = useGradeStore();
 
   const handleEdit = (row: TuitionSchemaForm) => {
-    console.log("Edit record:", row);
     setSelectedRecord(row);
     setEditModalOpen(true);
   };
 
   const handleEditSuccess = () => {
-    console.log("Edit success, refreshing data...");
     if (onDataChange) {
       onDataChange();
     }
     setSelectedRecord(null);
   };
 
-  const handlePrint = (row: TuitionSchemaForm) => {
-    console.log("Print record:", row);
-
+  const handlePrint = (row: any) => {
     try {
       // Generate PDF invoice
-      generateInvoicePDF(row, {
-        invoiceNumber: generateInvoiceNumber(),
-        issueDate: getCurrentDate(),
-        schoolName: "Taud Salsabila",
-        schoolAddress: "Jl. Pendidikan No. 123, Jakarta",
+      generateSPPInvoicePDF(row, {
+        invoiceNumber: generateSPPInvoiceNumber(),
+        issueDate: getCurrentDateID(),
+        schoolName: "TAUD Salsabila",
+        schoolAddress:
+          "Jl. Laskar Dalam, Griya Metropolitan Blok D1 No.1, RT.005/RW.003, Pekayon Jaya, Kota Bks, Jawa Barat 17148",
         schoolPhone: "Telp: 628 28372983",
+        schoolEmail: "info@taudsalsabila.sch.id",
       });
 
       console.log("PDF invoice generated successfully");
@@ -60,24 +58,6 @@ export const StudentTuitionTable = ({
       console.error("Error generating PDF:", error);
       alert("Gagal membuat invoice PDF. Silakan coba lagi.");
     }
-  };
-
-  // Custom renderer untuk nama siswa dengan avatar
-  const renderStudentName = (value: any, row: any) => {
-    const student = row.student;
-    if (!student) return "-";
-
-    return (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-          {student.fullName?.charAt(0)?.toUpperCase() || "?"}
-        </div>
-        <div>
-          <div className="font-medium text-gray-900">{student.fullName}</div>
-          <div className="text-sm text-gray-500">{student.nickName}</div>
-        </div>
-      </div>
-    );
   };
 
   // Custom renderer untuk status pembayaran
@@ -122,6 +102,25 @@ export const StudentTuitionTable = ({
     });
   };
 
+  const createStudentRenderer = () => (_: any, student: any) => {
+    return (
+      <div className="flex items-center gap-2">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src={student.avatar || "/default-avatar.png"} />
+          <AvatarFallback>
+            {student.fullName?.charAt(0)?.toUpperCase() || "U"}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <span className="font-medium">{student.fullName}</span>
+          {selectedGrade && (
+            <span className="text-xs text-gray-500">{selectedGrade.gradeLevel}</span>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   // Custom renderer untuk periode bulan
   const renderMonth = (value: any, row: any) => {
     const month = row.month;
@@ -152,7 +151,7 @@ export const StudentTuitionTable = ({
     {
       key: "student",
       title: "Nama Siswa",
-      render: renderStudentName,
+      render: (_value, row) => createStudentRenderer()("", row.student),
     },
     {
       key: "month",
