@@ -60,26 +60,44 @@ export const StudentTuitionTable = ({
     }
   };
 
+  // Custom renderer untuk nama siswa dengan avatar
+  const renderStudentName = (value: any, row: any) => {
+    const student = row.student;
+    if (!student) return "-";
+
+    return (
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+          {student.fullName?.charAt(0)?.toUpperCase() || "?"}
+        </div>
+        <div>
+          <div className="font-medium text-gray-900">{student.fullName}</div>
+          <div className="text-sm text-gray-500">{student.nickName}</div>
+        </div>
+      </div>
+    );
+  };
+
   // Custom renderer untuk status pembayaran
   const renderPaymentStatus = (value: any, row: any) => {
     const status = row.status;
 
     if (status === "SUCCESS") {
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800'>
           Dibayar
         </span>
       );
     } else if (status === "PENDING") {
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+        <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800'>
           Belum Dibayar
         </span>
       );
     }
 
     return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+      <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800'>
         {status}
       </span>
     );
@@ -182,13 +200,13 @@ export const StudentTuitionTable = ({
 
   const actions: TableAction[] = [
     {
-      icon: <Printer className="h-4 w-4" />,
+      icon: <Printer className='h-4 w-4' />,
       onClick: handlePrint,
       tooltip: "Print",
       className: "hover:text-blue-500",
     },
     {
-      icon: <Edit className="h-4 w-4" />,
+      icon: <Edit className='h-4 w-4' />,
       onClick: handleEdit,
       tooltip: "Edit",
       className: "hover:text-yellow-500",
@@ -201,14 +219,14 @@ export const StudentTuitionTable = ({
         columns={columns}
         data={data}
         actions={actions}
-        className="shadow-sm"
+        className='shadow-sm'
       />
 
       {/* Modal Edit */}
       <ModalTuitionForm
         open={editModalOpen}
         setOpen={setEditModalOpen}
-        mode="edit"
+        mode='edit'
         editData={selectedRecord}
         onSuccess={handleEditSuccess}
       />

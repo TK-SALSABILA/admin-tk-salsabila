@@ -7,7 +7,9 @@ import { TuitionSchemaForm } from "@/schema/tuitionSchema";
 export const tuitionService = {
   async getAll(params: TuitionParams) {
     try {
-      const response = await apiClient.get(`/tuition/record/${params.classId}/${params.month}`);
+      const response = await apiClient.get(
+        `/tuition/record/${params.classId}/${params.month}`
+      );
       return response.data;
     } catch (error) {
       throw error;
@@ -22,9 +24,9 @@ export const tuitionService = {
       throw error;
     }
   },
-  async updateTuition({id,data}: {id: string; data: TuitionSchemaForm}) {
+  async updateTuition({ id, data }: { id: string; data: TuitionSchemaForm }) {
     try {
-      const response = await apiClient.post(`/tuition/update/${id}`, data);
+      const response = await apiClient.post(`/tuition/create`, data);
       return response.data;
     } catch (error) {
       throw error;

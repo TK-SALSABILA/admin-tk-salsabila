@@ -21,13 +21,13 @@ const StudentTuitionTab = () => {
   });
 
   return (
-    <div className="w-full space-y-4">
+    <div className='w-full space-y-4'>
       <StudentTuitionFilters />
 
       {isPending ? (
         <LoadingSkeletonTable />
       ) : isError ? (
-        <div className="flex w-full h-full items-center text-red-500 font-semibold">
+        <div className="flex w-full h-full items-center  text-red-500 font-semibold">
           <span className="text-center">
             Terjadi kesalahan saat mengambil data SPP.
           </span>
