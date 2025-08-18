@@ -55,29 +55,11 @@ export const StudentTuitionTable = ({
 
       console.log("PDF invoice generated successfully");
     } catch (error) {
-      console.error("Error generating PDF:", error);
       alert("Gagal membuat invoice PDF. Silakan coba lagi.");
     }
   };
 
-  // Custom renderer untuk nama siswa dengan avatar
-  const renderStudentName = (value: any, row: any) => {
-    const student = row.student;
-    if (!student) return "-";
-
-    return (
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-          {student.fullName?.charAt(0)?.toUpperCase() || "?"}
-        </div>
-        <div>
-          <div className="font-medium text-gray-900">{student.fullName}</div>
-          <div className="text-sm text-gray-500">{student.nickName}</div>
-        </div>
-      </div>
-    );
-  };
-
+ 
   // Custom renderer untuk status pembayaran
   const renderPaymentStatus = (value: any, row: any) => {
     const status = row.status;

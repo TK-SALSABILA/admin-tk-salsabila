@@ -8,9 +8,10 @@ import { useSearchParams } from "next/navigation";
 import StudentSavingFilters from "./StudentSavingFilters";
 import CustomCardFinance from "@/components/shared/CustomCardFinance";
 import { useGetSavingsQuery } from "@/hooks/query/useSavingQuery";
+import LoadingSkeletonTable from "@/components/shared/LoadingSkeletonTable";
 
 const StudentSavingTab = () => {
-  const { data, isPending } = useGetSavingsQuery({ page: 1, rpp: 10 });
+  const { data, isPending, isError } = useGetSavingsQuery({ page: 1, rpp: 10 });
   const sppPayments = paymentData.filter(
     (item) => item.jenisPembayaran === "SPP"
   );
@@ -48,7 +49,13 @@ const StudentSavingTab = () => {
         />
       </div>
       <StudentSavingFilters />
-      <StudentSavingTable />
+      {isPending ? (
+        <LoadingSkeletonTable />
+      ) : isError ? (
+        <div>Error loading data</div>
+      ) : (
+        <StudentSavingTable data={data.data} />
+      )}
     </div>
   );
 };

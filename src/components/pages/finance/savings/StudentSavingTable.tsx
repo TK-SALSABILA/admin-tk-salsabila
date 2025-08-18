@@ -7,56 +7,15 @@ import {
   createCurrencyRenderer,
 } from "@/utils/tableHelper";
 import DataTable from "@/components/shared/DataTable";
+import { SavingGetData } from "@/types/saving";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGradeStore } from "@/stores/grade-store";
+interface StudentSavingTableProps {
+  data: SavingGetData[];
+}
 
-export const StudentSavingTable = () => {
-  const paymentData = [
-    {
-      name: "John Doe",
-      class: "TK A",
-      academicYear: "2025-2026",
-      tanggal: "4 April 2026",
-      jenisPembayaran: "Tabungan",
-      perihal: "Pembayaran Tabungan April 2026",
-      jumlah: 150000,
-    },
-    {
-      name: "Jane Smith",
-      class: "TK B",
-      academicYear: "2025-2026",
-      tanggal: "4 April 2026",
-      jenisPembayaran: "Tabungan",
-      perihal: "Tabungan",
-      jumlah: 50000,
-    },
-    {
-      name: "Alice Johnson",
-      class: "SD 1A",
-      academicYear: "2025-2026",
-      tanggal: "4 April 2026",
-      jenisPembayaran: "Tabungan",
-      perihal: "Tabungan sekolah",
-      jumlah: 75000,
-    },
-    {
-      name: "Bob Brown",
-      class: "SD 1A",
-      academicYear: "2025-2026",
-      tanggal: "4 April 2026",
-      jenisPembayaran: "Tabungan",
-      perihal: "Tabungan Bulanan",
-      jumlah: 75000,
-    },
-    {
-      name: "Charlie Green",
-      class: "SD 1A",
-      academicYear: "2025-2026",
-      tanggal: "4 April 2026",
-      jenisPembayaran: "Tabungan",
-      perihal: "Tabungan Kegiatan",
-      jumlah: 75000,
-    },
-  ];
-
+export const StudentSavingTable = ({ data }: StudentSavingTableProps) => {
+  const { selectedGrade } = useGradeStore();
   const getPaymentTypeColor = (type: string) => {
     switch (type) {
       default:
@@ -64,33 +23,54 @@ export const StudentSavingTable = () => {
     }
   };
 
+  const createStudentRenderer = () => (_: any, student: any) => {
+    return (
+      <div className="flex items-center gap-2">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src={student || "/default-avatar.png"} />
+          <AvatarFallback>
+            {student?.charAt(0)?.toUpperCase() || "U"}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <span className="font-medium">{student}</span>
+          {selectedGrade && (
+            <span className="text-xs text-gray-500">
+              {selectedGrade.gradeLevel}
+            </span>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const columns: TableColumn[] = [
     {
-      key: "name",
+      key: "studentName",
       title: "Nama Siswa",
-      render: createAvatarRenderer("name", "avatar", "class", "academicYear"),
+      render: (_value, row) => createStudentRenderer()("", row.studentName),
     },
     {
-      key: "jenisPembayaran",
+      key: "paymentType",
       title: "Jenis Pembayaran",
       sortable: true,
       render: createBadgeRenderer(getPaymentTypeColor),
     },
     {
-      key: "tanggal",
+      key: "transactionDate",
       title: "Tanggal",
       sortable: true,
       align: "left",
     },
     {
-      key: "jumlah",
+      key: "totalAmount",
       title: "Jumlah",
       sortable: true,
       align: "left",
       render: createCurrencyRenderer(),
     },
     {
-      key: "perihal",
+      key: "description",
       title: "Perihal",
       sortable: true,
     },
@@ -114,7 +94,7 @@ export const StudentSavingTable = () => {
   return (
     <DataTable
       columns={columns}
-      data={paymentData}
+      data={data}
       actions={actions}
       className="shadow-sm"
     />

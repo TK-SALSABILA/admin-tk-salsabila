@@ -22,19 +22,6 @@ const StudentSavingFilters = () => {
     },
   ];
 
-  const classs: FilterConfig[] = [
-    {
-      type: "select",
-      key: "kelas",
-      placeholder: "Kelas",
-      options: [
-        { value: "1", label: "Kelas 1" },
-        { value: "2", label: "Kelas 2" },
-        { value: "3", label: "Kelas 3" },
-      ],
-    },
-  ];
-
   const studentName: FilterConfig[] = [
     {
       type: "select",
@@ -47,6 +34,16 @@ const StudentSavingFilters = () => {
       ],
     },
   ];
+
+  const gradeFilter: FilterConfig[] = [
+    {
+      type: "grade",
+      key: "kelas",
+      placeholder: "Pilih Kelas",
+      width: "w-[200px]",
+    },
+  ];
+
   return (
     <div className="flex justify-start gap-20">
       <div className="flex flex-row items-start gap-2">
@@ -60,7 +57,7 @@ const StudentSavingFilters = () => {
           key={studentName[0].key}
           actions={null}
         />
-        <ReusableFilter filters={classs} key={classs[0].key} actions={null} />
+        <ReusableFilter filters={gradeFilter} actions={null} />
       </div>
       <div className="">
         <ModalSavingForm open={open} setOpen={setOpen} />
