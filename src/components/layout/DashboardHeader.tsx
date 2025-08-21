@@ -26,6 +26,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useRouter } from "next/navigation";
 import NotificationsDropdown from "./header/NotificationsDropdown";
 import UserDropdown from "./header/UserDropdown";
+import LogoTaud from "../shared/LogoTaud";
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -80,16 +81,12 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
         {/* Logo & School Name */}
         <div className="flex items-center gap-3">
-          <div className="bg-yellow-500 rounded-lg p-2 flex items-center justify-center">
-            <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            </div>
-          </div>
+          <LogoTaud />
           <div className="hidden sm:block">
             <h1 className="text-lg font-semibold text-gray-900">
-              Logoipsum Academy
+              TAUD SALSABILA
             </h1>
-            <p className="text-sm text-gray-500">Taud SalSabila</p>
+            <p className="text-sm text-gray-500">SISTEM ADMIN</p>
           </div>
         </div>
       </div>
@@ -97,7 +94,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <div className="flex items-center gap-3">
         {/* Settings */}
         <NotificationsDropdown />
-        <UserDropdown/>
+        <UserDropdown />
       </div>
     </header>
   );
