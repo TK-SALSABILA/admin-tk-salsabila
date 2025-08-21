@@ -1,8 +1,10 @@
-import StudentsPage from '@/components/pages/students/StudentsPage'
-import React from 'react'
+import StudentsPage from "@/components/pages/students/StudentsPage";
+import React, { Suspense } from "react";
 
 export default function Students() {
   return (
-    <StudentsPage/>
-  )
+    <Suspense>
+      <StudentsPage />
+    </Suspense>
+  );
 }

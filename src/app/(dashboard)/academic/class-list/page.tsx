@@ -1,10 +1,12 @@
-import ClassListPage from '@/components/pages/academic/class-list/ClassListPage'
-import React from 'react'
+import ClassListPage from "@/components/pages/academic/class-list/ClassListPage";
+import React, { Suspense } from "react";
 
 const ClassList = () => {
   return (
-   <ClassListPage/>
-  )
-}
+    <Suspense>
+      <ClassListPage />
+    </Suspense>
+  );
+};
 
-export default ClassList
+export default ClassList;
