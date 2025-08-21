@@ -1,5 +1,6 @@
 "use client";
 
+import StudentsSearch from "@/components/shared/StudentSearch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -39,8 +40,8 @@ const StudentsFilter = () => {
         </Select>
       </div>
       <div className="flex items-center gap-2">
-        <Input placeholder="Cari nama siswa" className="w-full md:w-[250px]" />
-        <Button onClick={()=> router.push("/students/create")}>
+        <StudentsSearch />
+        <Button onClick={() => router.push("/students/create")}>
           <PlusSquareIcon /> Tambah Siswa
         </Button>
       </div>

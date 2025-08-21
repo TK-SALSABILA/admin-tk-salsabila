@@ -16,11 +16,12 @@ const StudentsPage = () => {
   const searchParams = useSearchParams();
   const urlParams = createURLParamsHelper(searchParams, router);
   const paginationParams = urlParams.getPaginationParams(1, 10);
-  const {
-    data: students,
-    isPending,
-    isError,
-  } = useGetStudentsQuery(paginationParams);
+  const searchStudent = searchParams.get("q") || "";
+  const params = {
+    ...paginationParams,
+    q: searchStudent,
+  };
+  const { data: students, isPending, isError } = useGetStudentsQuery(params);
 
   const handlePageChange = (page: number) => {
     urlParams.updatePage(page);
